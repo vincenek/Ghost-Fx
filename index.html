@@ -3,87 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Forex Event Matrix</title>
+    <title>Forex Impact Matrix</title>
     <style>
         :root {
-            --primary-bg: #0a0e14;
-            --card-bg: #1d232a;
-            --text-primary: #cbd0d7;
-            --high-impact: #ff3366;
+            --primary-bg: #0d1117;
+            --card-bg: #161b22;
+            --text-primary: #c9d1d9;
+            --high-impact: #ff4444;
             --medium-impact: #ffaa44;
             --low-impact: #44aaff;
             --neutral-impact: #00cc88;
-            --timeline: #2d3746;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'SF Pro Display', system-ui, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
         }
 
         body {
             background: var(--primary-bg);
             color: var(--text-primary);
             min-height: 100vh;
-            padding: 2rem;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        .timeline-section {
-            position: relative;
             padding: 1rem;
         }
 
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            width: 2px;
-            height: 100%;
-            background: var(--timeline);
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .impact-legend {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem;
         }
 
         .event-card {
             background: var(--card-bg);
-            border-radius: 12px;
+            border-radius: 10px;
             padding: 1.5rem;
-            margin: 1.5rem 0;
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
             border-left: 4px solid;
+            transition: transform 0.2s;
+            cursor: pointer;
         }
 
         .event-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-
-        .impact-high { border-color: var(--high-impact); }
-        .impact-medium { border-color: var(--medium-impact); }
-        .impact-low { border-color: var(--low-impact); }
-        .impact-neutral { border-color: var(--neutral-impact); }
-
-        .event-time {
-            font-size: 0.9rem;
-            color: #7a828d;
-            margin-bottom: 0.5rem;
         }
 
         .currency-pair {
             font-weight: 600;
             color: #00ffaa;
             margin-bottom: 0.5rem;
+            font-size: 1.1rem;
         }
+
+        .event-time {
+            color: #8b949e;
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .event-title {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .impact-high { border-color: var(--high-impact); }
+        .impact-medium { border-color: var(--medium-impact); }
+        .impact-low { border-color: var(--low-impact); }
+        .impact-neutral { border-color: var(--neutral-impact); }
 
         .modal {
             display: none;
@@ -92,18 +108,18 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 1000;
-            padding: 2rem;
+            background: rgba(0,0,0,0.9);
+            padding: 1rem;
             overflow-y: auto;
+            z-index: 1000;
         }
 
         .modal-content {
             background: var(--card-bg);
-            max-width: 800px;
+            max-width: 600px;
             margin: 2rem auto;
             padding: 2rem;
-            border-radius: 16px;
+            border-radius: 10px;
             position: relative;
         }
 
@@ -115,42 +131,40 @@
             font-size: 1.5rem;
         }
 
-        .analysis-section {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            background: rgba(255,255,255,0.05);
-            border-radius: 8px;
-        }
-
-        .impact-tag {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            margin-bottom: 1rem;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            font-size: 1.2rem;
-            color: #44aaff;
+        @media (max-width: 768px) {
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="timeline-section">
-            <h2>📈 Upcoming Events</h2>
-            <div id="future-events" class="timeline">
-                <div class="loading">Loading future events...</div>
+        <div class="impact-legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--high-impact)"></div>
+                High Impact
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--medium-impact)"></div>
+                Medium Impact
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--low-impact)"></div>
+                Low Impact
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--neutral-impact)"></div>
+                Neutral Impact
             </div>
         </div>
-        <div class="timeline-section">
-            <h2>📉 Past Events</h2>
-            <div id="past-events" class="timeline">
-                <div class="loading">Loading past events...</div>
-            </div>
+
+        <div id="events-container" class="events-grid">
+            <div class="loading">Loading market events...</div>
         </div>
     </div>
 
@@ -162,98 +176,104 @@
     </div>
 
 <script>
-const API_KEY = 'RI1665KI0AHAUBNL'; // 🔑 RI1665KI0AHAUBNL
+const API_KEY = 'YOUR_API_KEY'; // RI1665KI0AHAUBNL
 const NEWS_URL = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=forex&apikey=${API_KEY}`;
-
-let allEvents = [];
 
 async function fetchEvents() {
     try {
-        showLoading(true);
         const response = await fetch(NEWS_URL);
         const data = await response.json();
-        allEvents = data.feed || [];
-        processEvents();
+        processEvents(data.feed || []);
     } catch (error) {
-        handleError();
-    } finally {
-        showLoading(false);
+        showError();
     }
 }
 
-function processEvents() {
-    const now = new Date();
-    const pastEvents = [];
-    const futureEvents = [];
+function processEvents(events) {
+    const container = document.getElementById('events-container');
+    container.innerHTML = '';
 
-    allEvents.forEach(event => {
-        const eventDate = new Date(event.time_published);
-        const card = createEventCard(event, eventDate);
-        
-        eventDate < now ? pastEvents.push(card) : futureEvents.push(card);
+    events.slice(0, 50).forEach(event => {
+        const currencies = getCurrencyPairs(event.title);
+        if (currencies) {
+            const card = createEventCard(event, currencies);
+            container.appendChild(card);
+        }
     });
-
-    document.getElementById('past-events').innerHTML = pastEvents.join('');
-    document.getElementById('future-events').innerHTML = futureEvents.join('');
-    addCardInteractions();
 }
 
-function createEventCard(event, eventDate) {
+function createEventCard(event, currencies) {
     const impactClass = getImpactClass(event.overall_sentiment_score);
-    return `
-        <div class="event-card ${impactClass}" data-event='${JSON.stringify(event).replace(/'/g, "&apos;")}'>
-            <div class="impact-tag" style="background: ${getImpactColor(impactClass)}20; color: ${getImpactColor(impactClass)}">
-                ${event.overall_sentiment_label || 'Event'}
-            </div>
-            <div class="currency-pair">${getCurrencyPairs(event.title)}</div>
-            <div class="event-time">${eventDate.toLocaleString()}</div>
-            <h3>${event.title}</h3>
-        </div>
-    `;
-}
-
-function showEventDetails(event) {
-    const modalContent = `
-        <h2>${event.title}</h2>
+    const card = document.createElement('div');
+    card.className = `event-card ${impactClass}`;
+    card.onclick = () => showEventDetails(event, currencies);
+    
+    card.innerHTML = `
+        <div class="currency-pair">${currencies}</div>
         <div class="event-time">${new Date(event.time_published).toLocaleString()}</div>
-        <div class="currency-pair">Affected Pairs: ${getCurrencyPairs(event.title)}</div>
-        
-        <div class="analysis-section">
-            <h3>💹 Market Impact Analysis</h3>
-            <p>${generateAnalysis(event)}</p>
-            ${event.summary ? `<p><strong>Summary:</strong> ${event.summary}</p>` : ''}
-            ${event.url ? `<a href="${event.url}" target="_blank" style="color: #44aaff;">Read Full Report →</a>` : ''}
+        <div class="event-title">${event.title}</div>
+        <div style="color: ${getImpactColor(impactClass)}; font-size: 0.9rem;">
+            ${event.overall_sentiment_label || 'Market Event'}
         </div>
     `;
     
-    document.getElementById('modal-content').innerHTML = modalContent;
+    return card;
+}
+
+function showEventDetails(event, currencies) {
+    const modalContent = document.getElementById('modal-content');
+    const [base, quote] = currencies.split('/');
+    const impact = getImpactLabel(event.overall_sentiment_score);
+    
+    modalContent.innerHTML = `
+        <h2 style="margin-bottom: 1rem;">${event.title}</h2>
+        <div style="margin-bottom: 1.5rem;">
+            <div class="currency-pair">${currencies}</div>
+            <div class="event-time">${new Date(event.time_published).toLocaleString()}</div>
+        </div>
+        
+        <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 8px;">
+            <h3 style="margin-bottom: 1rem;">💹 Expected Market Impact</h3>
+            <p>${generateImpactAnalysis(event, base, quote)}</p>
+            ${event.summary ? `<p style="margin-top: 1rem;">${event.summary}</p>` : ''}
+        </div>
+        
+        ${event.url ? `
+        <div style="margin-top: 1.5rem;">
+            <a href="${event.url}" target="_blank" style="color: #44aaff; text-decoration: none;">
+                📰 Read Full Report →
+            </a>
+        </div>` : ''}
+    `;
+
     document.getElementById('event-modal').style.display = 'block';
 }
 
-function generateAnalysis(event) {
-    const pairs = getCurrencyPairs(event.title);
+function generateImpactAnalysis(event, baseCurrency, quoteCurrency) {
     const score = parseFloat(event.overall_sentiment_score);
-    const [baseCurrency, quoteCurrency] = pairs.split('/');
+    const impactLevel = getImpactLabel(score);
     
-    let analysis = `This ${getImpactLabel(score)} event typically affects `;
-    analysis += `${baseCurrency} valuation. Historically, similar events have caused `;
-    analysis += `${score >= 0.5 ? '1.5-3%' : '0.5-1.2%'} movements in the ${pairs} pair. `;
-    analysis += `Traders should watch for ${score >= 0.5 ? 'breakout' : 'range-bound'} patterns `;
-    analysis += `around key ${score >= 0.5 ? 'resistance' : 'support'} levels.`;
+    let analysis = `This ${impactLevel} event is likely to `;
+    analysis += score > 0.5 ? 'strengthen ' : 'weaken ';
+    analysis += `${baseCurrency} against ${quoteCurrency}. `;
+    
+    if (score > 0.7) {
+        analysis += `Traders should prepare for potential breakouts and increased volatility.`;
+    } else if (score > 0.4) {
+        analysis += `Moderate price movements expected, watch key support/resistance levels.`;
+    } else {
+        analysis += `Limited market reaction anticipated, range-bound trading likely.`;
+    }
     
     return analysis;
 }
 
-function getImpactLabel(score) {
-    if (score >= 0.7) return 'high-impact';
-    if (score >= 0.4) return 'medium-impact';
-    return 'low-impact';
-}
-
 function getCurrencyPairs(title) {
     const currencies = ['USD', 'EUR', 'JPY', 'GBP', 'CHF', 'CAD', 'AUD', 'NZD'];
-    const found = currencies.filter(currency => title.toUpperCase().includes(currency));
-    return found.length >= 2 ? `${found[0]}/${found[1]}` : 'Major Pairs';
+    const found = currencies.filter(currency => 
+        new RegExp(`\\b${currency}\\b`, 'i').test(title)
+    );
+    return found.length >= 2 ? `${found[0]}/${found[1]}` : null;
 }
 
 function getImpactClass(score) {
@@ -264,47 +284,38 @@ function getImpactClass(score) {
 }
 
 function getImpactColor(impactClass) {
-    const colors = {
-        'impact-high': '#ff3366',
+    return {
+        'impact-high': '#ff4444',
         'impact-medium': '#ffaa44',
         'impact-low': '#44aaff',
         'impact-neutral': '#00cc88'
-    };
-    return colors[impactClass] || '#44aaff';
+    }[impactClass];
 }
 
-function addCardInteractions() {
-    document.querySelectorAll('.event-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const eventData = JSON.parse(card.dataset.event.replace(/&apos;/g, "'"));
-            showEventDetails(eventData);
-        });
-    });
+function getImpactLabel(score) {
+    const numScore = parseFloat(score);
+    if (numScore >= 0.7) return 'High Impact';
+    if (numScore >= 0.4) return 'Medium Impact';
+    return numScore >= 0.1 ? 'Low Impact' : 'Neutral Impact';
 }
 
 function closeModal() {
     document.getElementById('event-modal').style.display = 'none';
 }
 
-function showLoading(show) {
-    document.querySelectorAll('.loading').forEach(el => {
-        el.style.display = show ? 'block' : 'none';
-    });
-}
-
-function handleError() {
-    const container = document.getElementById('news-container');
-    container.innerHTML = '<div class="news-card">⚠️ Error fetching market data. Please try again later.</div>';
+function showError() {
+    const container = document.getElementById('events-container');
+    container.innerHTML = '<div class="event-card">⚠️ Error loading market data. Please try again later.</div>';
 }
 
 // Initial load
 fetchEvents();
+// Refresh every 5 minutes
 setInterval(fetchEvents, 300000);
 
 // Close modal on outside click
 window.onclick = function(event) {
-    const modal = document.getElementById('event-modal');
-    if (event.target === modal) {
+    if (event.target.classList.contains('modal')) {
         closeModal();
     }
 }
