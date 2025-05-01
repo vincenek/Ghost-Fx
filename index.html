@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forex News Events - Professional Tracker</title>
+    <style>
+        :root {
+            --primary-bg: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-primary: #e0e0e0;
+            --high-impact: #ff4444;
+            --medium-impact: #ffa500;
+            --low-impact: #4488ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border-bottom: 2px solid var(--text-primary);
+        }
+
+        .news-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .news-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .impact-high {
+            border-left: 4px solid var(--high-impact);
+        }
+
+        .impact-medium {
+            border-left: 4px solid var(--medium-impact);
+        }
+
+        .impact-low {
+            border-left: 4px solid var(--low-impact);
+        }
+
+        .currency-pair {
+            font-weight: 700;
+            color: #00cc88;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-time {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Forex Economic Calendar</h1>
+            <p>Real-time updates for major currency pairs</p>
+        </div>
+        <div id="news-container" class="news-container">
+            <div class="loading">Loading market events...</div>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = 'YOUR_API_KEY'; // RI1665KI0AHAUBNL
+        const NEWS_URL = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=forex&apikey=${API_KEY}`;
+
+        const majorCurrencies = ['USD', 'EUR', 'JPY', 'GBP', 'CHF', 'CAD', 'AUD', 'NZD'];
+
+        async function fetchNews() {
+            try {
+                const response = await fetch(NEWS_URL);
+                const data = await response.json();
+                processNewsData(data.feed || []);
+            } catch (error) {
+                document.getElementById('news-container').innerHTML = 
+                    '<div class="news-card">Error fetching market data. Please try again later.</div>';
+            }
+        }
+
+        function processNewsData(newsItems) {
+            const container = document.getElementById('news-container');
+            container.innerHTML = '';
+
+            newsItems.slice(0, 30).forEach(item => {
+                const relevantCurrencies = majorCurrencies.filter(currency => 
+                    item.title.toUpperCase().includes(currency)
+                );
+
+                if (relevantCurrencies.length > 0) {
+                    const impactClass = getImpactClass(item.overall_sentiment_score);
+                    const card = document.createElement('div');
+                    card.className = `news-card ${impactClass}`;
+                    
+                    card.innerHTML = `
+                        <div class="currency-pair">${relevantCurrencies.join('/')}</div>
+                        <div class="event-time">${new Date(item.time_published).toLocaleString()}</div>
+                        <h3>${item.title}</h3>
+                        <p>${item.summary}</p>
+                        <div style="margin-top: 1rem; color: ${getImpactColor(impactClass)};">
+                            Impact: ${item.overall_sentiment_label || 'N/A'}
+                        </div>
+                    `;
+                    
+                    container.appendChild(card);
+                }
+            });
+
+            if (!container.innerHTML) {
+                container.innerHTML = '<div class="news-card">No significant events found for major currencies.</div>';
+            }
+        }
+
+        function getImpactClass(score) {
+            const numScore = parseFloat(score);
+            if (numScore >= 0.7) return 'impact-high';
+            if (numScore >= 0.4) return 'impact-medium';
+            return 'impact-low';
+        }
+
+        function getImpactColor(impactClass) {
+            return {
+                'impact-high': 'var(--high-impact)',
+                'impact-medium': 'var(--medium-impact)',
+                'impact-low': 'var(--low-impact)'
+            }[impactClass];
+        }
+
+        // Initial load
+        fetchNews();
+        // Refresh every 5 minutes
+        setInterval(fetchNews, 300000);
+    </script>
+</body>
+</html>
