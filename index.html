@@ -177,15 +177,46 @@
 
 <script>
 const API_KEY = 'YOUR_API_KEY'; // 🔑 LBX4CI31I7DSUUWN
-const NEWS_URL = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=forex&apikey=${API_KEY}`;
+const NEWS_URL = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&apikey=${API_KEY}`;
+
+// Improved time formatting function
+function formatNewsTime(timeString) {
+    try {
+        const [datePart, timePart] = timeString.split('T');
+        const year = datePart.substring(0, 4);
+        const month = String(datePart.substring(4, 6) - 1).padStart(2, '0');
+        const day = datePart.substring(6, 8);
+        const hours = timePart.substring(0, 2);
+        const minutes = timePart.substring(2, 4);
+
+        const date = new Date(year, month, day, hours, minutes);
+        
+        return date.toLocaleString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        }) + ` (${date.toUTCString().substring(0, 22)})`;
+    } catch (error) {
+        console.error('Error formatting time:', error);
+        return 'Time unavailable';
+    }
+}
 
 async function fetchEvents() {
     try {
         const response = await fetch(NEWS_URL);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
         const data = await response.json();
-        processEvents(data.feed || []);
+        if (data.Note) throw new Error('API rate limit exceeded - Try again in 1 minute');
+        if (!data.feed || !Array.isArray(data.feed)) throw new Error('Invalid data format from API');
+        
+        processEvents(data.feed);
     } catch (error) {
-        showError();
+        showError(error.message);
     }
 }
 
@@ -193,8 +224,13 @@ function processEvents(events) {
     const container = document.getElementById('events-container');
     container.innerHTML = '';
 
+    if (!events.length) {
+        container.innerHTML = '<div class="event-card">No market events found</div>';
+        return;
+    }
+
     events.slice(0, 50).forEach(event => {
-        const currencies = getCurrencyPairs(event.title);
+        const currencies = getCurrencyPairs(event);
         if (currencies) {
             const card = createEventCard(event, currencies);
             container.appendChild(card);
@@ -210,7 +246,7 @@ function createEventCard(event, currencies) {
     
     card.innerHTML = `
         <div class="currency-pair">${currencies}</div>
-        <div class="event-time">${new Date(event.time_published).toLocaleString()}</div>
+        <div class="event-time">${formatNewsTime(event.time_published)}</div>
         <div class="event-title">${event.title}</div>
         <div style="color: ${getImpactColor(impactClass)}; font-size: 0.9rem;">
             ${event.overall_sentiment_label || 'Market Event'}
@@ -229,7 +265,9 @@ function showEventDetails(event, currencies) {
         <h2 style="margin-bottom: 1rem;">${event.title}</h2>
         <div style="margin-bottom: 1.5rem;">
             <div class="currency-pair">${currencies}</div>
-            <div class="event-time">${new Date(event.time_published).toLocaleString()}</div>
+            <div class="event-time">
+                ${formatNewsTime(event.time_published)}
+            </div>
         </div>
         
         <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 8px;">
@@ -255,7 +293,7 @@ function generateImpactAnalysis(event, baseCurrency, quoteCurrency) {
     
     let analysis = `This ${impactLevel} event is likely to `;
     analysis += score > 0.5 ? 'strengthen ' : 'weaken ';
-    analysis += `${baseCurrency} against ${quoteCurrency}. `;
+    analysis += `${baseCurrency} against ${quoteCurrency || 'major currencies'}. `;
     
     if (score > 0.7) {
         analysis += `Traders should prepare for potential breakouts and increased volatility.`;
@@ -268,12 +306,17 @@ function generateImpactAnalysis(event, baseCurrency, quoteCurrency) {
     return analysis;
 }
 
-function getCurrencyPairs(title) {
+function getCurrencyPairs(event) {
     const currencies = ['USD', 'EUR', 'JPY', 'GBP', 'CHF', 'CAD', 'AUD', 'NZD'];
-    const found = currencies.filter(currency => 
-        new RegExp(`\\b${currency}\\b`, 'i').test(title)
+    const titleCurrencies = currencies.filter(c => 
+        new RegExp(`\\b${c}\\b`, 'i').test(event.title)
     );
-    return found.length >= 2 ? `${found[0]}/${found[1]}` : null;
+    const tickerCurrencies = (event.ticker_sentiment || [])
+        .map(t => t.ticker?.split(':')[1])
+        .filter(c => c && currencies.includes(c));
+    
+    const allCurrencies = [...new Set([...titleCurrencies, ...tickerCurrencies])];
+    return allCurrencies.length >= 1 ? allCurrencies.join('/') : null;
 }
 
 function getImpactClass(score) {
@@ -303,9 +346,15 @@ function closeModal() {
     document.getElementById('event-modal').style.display = 'none';
 }
 
-function showError() {
+function showError(message) {
     const container = document.getElementById('events-container');
-    container.innerHTML = '<div class="event-card">⚠️ Error loading market data. Please try again later.</div>';
+    container.innerHTML = `
+        <div class="event-card" style="color: var(--high-impact)">
+            <h3>⚠️ Error Loading Data</h3>
+            <p>${message}</p>
+            <p>Please check your API key and try again</p>
+        </div>
+    `;
 }
 
 // Initial load
