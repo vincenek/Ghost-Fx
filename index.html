@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Forex News Tracker</title>
+    <title>Forex News Tracker</title>
     <style>
         :root {
             --primary-bg: #0d1117;
@@ -54,7 +54,6 @@
             border-left: 4px solid;
             transition: transform 0.2s;
             cursor: pointer;
-            position: relative;
         }
 
         .event-card:hover {
@@ -94,16 +93,6 @@
             text-align: center;
             padding: 2rem;
         }
-
-        @media (max-width: 768px) {
-            .events-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .event-card {
-                padding: 1rem;
-            }
-        }
     </style>
 </head>
 <body>
@@ -119,16 +108,18 @@
     </div>
 
 <script>
-const API_KEY = '1KCA5GKR715QMF24'; // Replace with your API key
-const NEWS_URL = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=forex&apikey=${API_KEY}`;
+const API_KEY = 'RI1665KI0AHAUBNL'; // 1KCA5GKR715QMF24
+const NEWS_URL = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&apikey=${API_KEY}`;
 
 async function fetchEvents() {
     try {
         const response = await fetch(NEWS_URL);
-        if (!response.ok) throw new Error('API request failed');
+        if (!response.ok) throw new Error('Network response was not ok');
         
         const data = await response.json();
-        if (!data?.feed?.length) throw new Error('No news data available');
+        if (!data.feed || !Array.isArray(data.feed)) {
+            throw new Error('Invalid API response format');
+        }
         
         processEvents(data.feed);
     } catch (error) {
@@ -142,24 +133,27 @@ function processEvents(events) {
 
     const majorCurrencies = ['USD', 'EUR', 'JPY', 'GBP', 'CHF', 'CAD', 'AUD'];
     
-    events.slice(0, 50).forEach(event => {
-        const currencies = getCurrenciesFromEvent(event);
-        if (currencies.length > 0) {
-            const card = createEventCard(event, currencies);
-            container.appendChild(card);
-        }
+    const filteredEvents = events.filter(event => {
+        const title = event.title.toUpperCase();
+        return majorCurrencies.some(currency => title.includes(currency));
     });
 
-    if (container.children.length === 0) {
+    if (filteredEvents.length === 0) {
         container.innerHTML = '<div class="error">No relevant forex events found</div>';
+        return;
     }
+
+    filteredEvents.slice(0, 50).forEach(event => {
+        const card = createEventCard(event);
+        container.appendChild(card);
+    });
 }
 
-function createEventCard(event, currencies) {
+function createEventCard(event) {
     const card = document.createElement('div');
     const impactClass = getImpactClass(event.overall_sentiment_score);
+    const currencies = getCurrenciesFromTitle(event.title);
     const time = formatTime(event.time_published);
-    const impactText = event.overall_sentiment_label || 'Market Event';
 
     card.className = `event-card ${impactClass}`;
     card.innerHTML = `
@@ -167,66 +161,19 @@ function createEventCard(event, currencies) {
         <div class="event-time">${time}</div>
         <div class="event-title">${event.title}</div>
         <div style="color: ${getImpactColor(impactClass)}; margin-top: 0.5rem;">
-            ${impactText} (${getImpactStrength(event.overall_sentiment_score)})
+            Impact: ${event.overall_sentiment_label || 'N/A'}
         </div>
     `;
 
-    card.addEventListener('click', () => showEventDetails(event, currencies));
     return card;
 }
 
-function showEventDetails(event, currencies) {
-    const impact = parseFloat(event.overall_sentiment_score);
-    const analysis = generateImpactAnalysis(currencies, impact);
-    
-    const modal = document.createElement('div');
-    modal.style.position = 'fixed';
-    modal.style.top = '0';
-    modal.style.left = '0';
-    modal.style.width = '100%';
-    modal.style.height = '100%';
-    modal.style.backgroundColor = 'rgba(0,0,0,0.9)';
-    modal.style.padding = '2rem';
-    modal.style.zIndex = '1000';
-    
-    modal.innerHTML = `
-        <div style="background: #161b22; padding: 2rem; border-radius: 8px; max-width: 600px; margin: 2rem auto; position: relative;">
-            <button onclick="this.parentElement.parentElement.remove()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: #fff; cursor: pointer; font-size: 1.5rem;">×</button>
-            <h2 style="margin-bottom: 1rem;">${event.title}</h2>
-            <div style="margin-bottom: 1.5rem;">
-                <div class="currency-pair">${currencies.join(' / ')}</div>
-                <div class="event-time">${formatTime(event.time_published)}</div>
-            </div>
-            <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 8px;">
-                <h3 style="margin-bottom: 1rem;">📈 Market Impact Analysis</h3>
-                <p>${analysis}</p>
-                ${event.summary ? `<p style="margin-top: 1rem;">${event.summary}</p>` : ''}
-            </div>
-            ${event.url ? `<a href="${event.url}" target="_blank" style="display: block; margin-top: 1.5rem; color: #44aaff; text-decoration: none;">📰 Read Full Report →</a>` : ''}
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-}
-
-function generateImpactAnalysis(currencies, impactScore) {
-    const [baseCurrency, quoteCurrency] = currencies;
-    const strength = impactScore >= 0.5 ? 'strengthen' : 'weaken';
-    const volatility = impactScore >= 0.7 ? 'high volatility' : impactScore >= 0.4 ? 'moderate volatility' : 'low volatility';
-    
-    return `This event is expected to ${strength} ${baseCurrency} against ${quoteCurrency || 'major currencies'}, 
-    with potential for ${volatility}. Traders should watch for ${impactScore >= 0.5 ? 'bullish' : 'bearish'} 
-    patterns in the ${baseCurrency}${quoteCurrency ? '/'+quoteCurrency : ''} pair.`;
-}
-
-function getCurrenciesFromEvent(event) {
+function getCurrenciesFromTitle(title) {
     const currencies = ['USD', 'EUR', 'JPY', 'GBP', 'CHF', 'CAD', 'AUD'];
-    const titleCurrencies = currencies.filter(c => event.title.toUpperCase().includes(c));
-    const tickerCurrencies = (event.ticker_sentiment || [])
-        .map(t => t.ticker.split(':')[1])
-        .filter(c => currencies.includes(c));
-    
-    return [...new Set([...titleCurrencies, ...tickerCurrencies])].slice(0, 2);
+    const found = currencies.filter(currency => 
+        title.toUpperCase().includes(currency)
+    );
+    return found.length > 0 ? found : ['Global'];
 }
 
 function formatTime(timeString) {
@@ -236,8 +183,7 @@ function formatTime(timeString) {
             month: 'short',
             day: 'numeric',
             hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
+            minute: '2-digit'
         });
     } catch {
         return 'Time unavailable';
@@ -259,20 +205,13 @@ function getImpactColor(impactClass) {
     }[impactClass];
 }
 
-function getImpactStrength(score) {
-    const numScore = parseFloat(score);
-    if (numScore >= 0.7) return 'High Impact';
-    if (numScore >= 0.4) return 'Medium Impact';
-    return 'Low Impact';
-}
-
 function showError(message) {
     const container = document.getElementById('events-container');
     container.innerHTML = `
         <div class="error">
             <h3>⚠️ Error Loading Data</h3>
             <p>${message}</p>
-            <p>Please check your API key and try again later</p>
+            <p>Please check your API key and internet connection</p>
         </div>
     `;
 }
