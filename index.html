@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FX Professional Calendar</title>
+    <title>Professional FX Calendar</title>
     <style>
         :root {
             --primary-bg: #13161b;
@@ -41,135 +41,88 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        .legend {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
+        .calendar-day {
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
         }
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 15px;
-            background: var(--card-bg);
-            border-radius: 20px;
-            font-size: 0.9em;
+        .day-header {
+            background: rgba(255,255,255,0.05);
+            padding: 12px 20px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .legend-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
+        .events-container {
+            padding: 15px;
         }
 
         .event-card {
             background: var(--card-bg);
-            border-radius: 8px;
-            overflow: hidden;
-            transition: transform 0.2s;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            gap: 15px;
+            align-items: center;
             border-left: 4px solid;
+            transition: transform 0.2s;
         }
 
         .event-card:hover {
-            transform: translateY(-3px);
+            transform: translateX(5px);
         }
 
-        .event-image {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-bottom: 1px solid var(--border-color);
+        .currency-flag {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #2a2e35;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .event-time {
+            width: 120px;
+            font-size: 0.9em;
+            color: #95a5a6;
         }
 
         .event-content {
-            padding: 15px;
+            flex: 1;
         }
 
         .currency-pair {
             font-weight: 600;
             color: #2ecc71;
-            margin-bottom: 8px;
-            font-size: 1.1em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .event-time {
-            font-size: 0.85em;
-            color: #95a5a6;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            margin-bottom: 4px;
         }
 
         .event-title {
             font-size: 0.95em;
             line-height: 1.4;
-            margin-bottom: 12px;
         }
 
-        .event-impact {
+        .impact-tag {
             font-size: 0.8em;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: inline-block;
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 4px;
+            text-transform: uppercase;
         }
 
         .impact-high { border-color: var(--high-impact); }
         .impact-medium { border-color: var(--medium-impact); }
         .impact-low { border-color: var(--low-impact); }
 
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
+        .no-events {
             padding: 20px;
-            z-index: 1000;
-            overflow-y: auto;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            max-width: 800px;
-            margin: 30px auto;
-            padding: 25px;
-            border-radius: 8px;
-            position: relative;
-        }
-
-        .modal-image {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .calendar-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .event-image {
-                height: 150px;
-            }
+            text-align: center;
+            color: #95a5a6;
+            font-style: italic;
         }
     </style>
 </head>
@@ -177,181 +130,161 @@
     <div class="container">
         <div class="header">
             <h1>Professional FX Calendar</h1>
-            <p>Market Moving Events & Economic Releases</p>
+            <p>Economic Events & Market Releases</p>
         </div>
 
-        <div class="legend">
-            <div class="legend-item">
-                <div class="legend-color" style="background: var(--high-impact)"></div>
-                High Impact
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: var(--medium-impact)"></div>
-                Medium Impact
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: var(--low-impact)"></div>
-                Low Impact
-            </div>
-        </div>
-
-        <div id="calendar-container" class="calendar-grid">
+        <div id="calendar-container">
             <!-- Loading skeleton -->
-            <div class="event-card">
-                <div class="event-image" style="background: #2a2e35"></div>
-                <div class="event-content">
-                    <div class="currency-pair" style="background: #2a2e35; width: 80px; height: 20px"></div>
-                    <div class="event-time" style="background: #2a2e35; width: 120px; height: 16px"></div>
-                    <div class="event-title" style="background: #2a2e35; height: 40px"></div>
+            <div class="calendar-day">
+                <div class="day-header">Loading...</div>
+                <div class="events-container">
+                    <div class="event-card">
+                        <div class="currency-flag"></div>
+                        <div class="event-time"></div>
+                        <div class="event-content">
+                            <div class="currency-pair"></div>
+                            <div class="event-title"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="event-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            <div id="modal-content"></div>
-        </div>
-    </div>
-
 <script>
-const API_KEY = 'YOUR_API_KEY'; // LBX4CI31I7DSUUWN
+const API_KEY = 'LBX4CI31I7DSUUWN';
 const NEWS_URL = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=forex&apikey=${API_KEY}`;
 
-// Generate finance-related placeholder images
-function getEventImage(currencies) {
-    const tags = currencies.join(',') || 'forex';
-    return `https://source.unsplash.com/random/800x600/?${tags},finance,chart`;
+// Simulated future dates for calendar structure
+const generateCalendarDays = () => {
+    const days = [];
+    const today = new Date();
+    for (let i = -2; i < 5; i++) {
+        const date = new Date(today);
+        date.setDate(date.getDate() + i);
+        days.push(date.toISOString().split('T')[0]);
+    }
+    return days;
+};
+
+function getCurrencyFlag(currency) {
+    const flags = {
+        USD: '🇺🇸', EUR: '🇪🇺', JPY: '🇯🇵', GBP: '🇬🇧',
+        CHF: '🇨🇭', CAD: '🇨🇦', AUD: '🇦🇺', NZD: '🇳🇿'
+    };
+    return flags[currency] || '💱';
 }
 
-function formatGMTTime(timeString) {
-    try {
-        const date = new Date(timeString);
-        return date.toLocaleString('en-US', {
-            weekday: 'short',
-            month: 'short',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true,
-            timeZone: 'UTC'
-        }) + ' GMT';
-    } catch (error) {
-        return 'Time unavailable';
-    }
+function formatDateHeader(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric'
+    });
+}
+
+function formatTime(timeString) {
+    const date = new Date(timeString);
+    return date.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+        timeZone: 'UTC'
+    }) + ' GMT';
 }
 
 async function fetchCalendar() {
     try {
         const response = await fetch(NEWS_URL);
         const data = await response.json();
+        const events = data.feed || [];
         
-        // Simulate future events for demonstration
-        const processedEvents = processEvents(data.feed || []);
-        const futureEvents = addFutureEvents(processedEvents);
+        // Generate calendar structure with empty days
+        const calendarDays = generateCalendarDays();
+        const eventsByDate = groupEventsByDate(events);
         
-        displayCalendar(futureEvents);
+        displayCalendar(calendarDays, eventsByDate);
     } catch (error) {
         console.error('Error:', error);
     }
 }
 
-function processEvents(events) {
-    return events.map(event => ({
-        ...event,
-        time_published: event.time_published || new Date().toISOString(),
-        image: getEventImage(getCurrencyPairs(event)),
-        currencies: getCurrencyPairs(event),
-        impact: getImpactClass(event.overall_sentiment_score)
-    }));
+function groupEventsByDate(events) {
+    const grouped = {};
+    events.forEach(event => {
+        const date = event.time_published.split('T')[0];
+        if (!grouped[date]) grouped[date] = [];
+        grouped[date].push(event);
+    });
+    return grouped;
 }
 
-function addFutureEvents(events) {
-    // Simulate future events (replace with real data if available)
-    const futureEvents = [...Array(3)].map((_, i) => ({
-        title: `Central Bank Rate Decision (Simulated)`,
-        time_published: new Date(Date.now() + 86400000 * (i + 1)).toISOString(),
-        currencies: ['USD', 'EUR'],
-        impact: 'impact-high',
-        image: getEventImage(['USD', 'EUR']),
-        summary: 'Simulated future event showing upcoming rate decision impact',
-        url: '#'
-    }));
-    
-    return [...futureEvents, ...events].sort((a, b) => 
-        new Date(b.time_published) - new Date(a.time_published)
-    );
-}
-
-function displayCalendar(events) {
+function displayCalendar(dates, eventsByDate) {
     const container = document.getElementById('calendar-container');
     container.innerHTML = '';
 
-    events.slice(0, 50).forEach(event => {
-        const card = document.createElement('div');
-        card.className = `event-card ${event.impact}`;
-        card.onclick = () => showEventDetails(event);
+    dates.forEach(date => {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day';
         
-        card.innerHTML = `
-            <img src="${event.image}" class="event-image" alt="Market event">
-            <div class="event-content">
-                <div class="currency-pair">
-                    ${event.currencies.join(' / ')}
-                </div>
-                <div class="event-time">
-                    ${formatGMTTime(event.time_published)}
-                </div>
-                <div class="event-title">${event.title}</div>
-                <div class="event-impact" style="color: ${getImpactColor(event.impact)}">
-                    ${event.impact.replace('impact-', '').toUpperCase()}
-                </div>
-            </div>
+        dayElement.innerHTML = `
+            <div class="day-header">${formatDateHeader(date)}</div>
+            <div class="events-container" id="events-${date}"></div>
         `;
+
+        const eventsContainer = dayElement.querySelector(`#events-${date}`);
+        const events = eventsByDate[date] || [];
         
-        container.appendChild(card);
+        if (events.length > 0) {
+            events.forEach(event => {
+                const currencies = getCurrencyPairs(event);
+                const card = createEventCard(event, currencies);
+                eventsContainer.appendChild(card);
+            });
+        } else {
+            eventsContainer.innerHTML = `
+                <div class="no-events">No scheduled events for this date</div>
+            `;
+        }
+
+        container.appendChild(dayElement);
     });
 }
 
-function showEventDetails(event) {
-    const modalContent = document.getElementById('modal-content');
+function createEventCard(event, currencies) {
+    const card = document.createElement('div');
+    card.className = `event-card ${getImpactClass(event.overall_sentiment_score)}`;
     
-    modalContent.innerHTML = `
-        <img src="${event.image}" class="modal-image" alt="Event detail">
-        <div class="currency-pair">${event.currencies.join(' / ')}</div>
-        <div class="event-time">${formatGMTTime(event.time_published)}</div>
-        <h2>${event.title}</h2>
-        
-        <div style="margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 6px;">
-            <h3 style="margin-bottom: 10px;">Market Impact Analysis</h3>
-            <p>${event.summary || 'Detailed analysis not available'}</p>
+    card.innerHTML = `
+        <div class="currency-flag">
+            ${currencies.map(c => getCurrencyFlag(c)).join('')}
         </div>
-        
-        ${event.url ? `
-        <a href="${event.url}" target="_blank" 
-           style="display: inline-flex; align-items: center; padding: 8px 15px;
-                  background: #2980b9; color: white; text-decoration: none;
-                  border-radius: 4px; gap: 8px;">
-            <span>Full Report</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6m4-3h6v6m-11 5L21 3"/>
-            </svg>
-        </a>` : ''}
+        <div class="event-time">
+            ${formatTime(event.time_published)}
+        </div>
+        <div class="event-content">
+            <div class="currency-pair">
+                ${currencies.join(' / ')}
+            </div>
+            <div class="event-title">
+                ${event.title}
+            </div>
+        </div>
+        <div class="impact-tag" style="color: ${getImpactColor(getImpactClass(event.overall_sentiment_score))}">
+            ${getImpactLabel(event.overall_sentiment_score)}
+        </div>
     `;
 
-    document.getElementById('event-modal').style.display = 'block';
+    return card;
 }
 
 function getCurrencyPairs(event) {
     const currencies = ['USD', 'EUR', 'JPY', 'GBP', 'CHF', 'CAD', 'AUD', 'NZD'];
-    const titleMatches = currencies.filter(c => 
+    const found = currencies.filter(c => 
         new RegExp(`\\b${c}\\b`, 'i').test(event.title)
     );
-    const tickerMatches = (event.ticker_sentiment || [])
-        .map(t => t.ticker?.split(':')[1])
-        .filter(c => c && currencies.includes(c));
-    
-    return [...new Set([...titleMatches, ...tickerMatches])].slice(0, 2) || ['GLOBAL'];
+    return found.length > 0 ? found : ['GLOBAL'];
 }
 
 function getImpactClass(score) {
@@ -369,21 +302,17 @@ function getImpactColor(impactClass) {
     }[impactClass];
 }
 
-function closeModal() {
-    document.getElementById('event-modal').style.display = 'none';
+function getImpactLabel(score) {
+    const numScore = parseFloat(score);
+    if (numScore >= 0.7) return 'High Impact';
+    if (numScore >= 0.4) return 'Medium Impact';
+    return 'Low Impact';
 }
 
 // Initial load
 fetchCalendar();
-// Refresh every 2 minutes
-setInterval(fetchCalendar, 120000);
-
-// Close modal on outside click
-window.onclick = function(event) {
-    if (event.target.classList.contains('modal')) {
-        closeModal();
-    }
-}
+// Refresh every 5 minutes
+setInterval(fetchCalendar, 300000);
 </script>
 </body>
 </html>
