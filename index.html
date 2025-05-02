@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional FX Calendar</title>
+    <title>Professional FX News Calendar</title>
     <style>
         :root {
             --primary-bg: #13161b;
@@ -41,239 +41,131 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        .calendar-day {
-            margin-bottom: 40px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .day-header {
-            background: rgba(255,255,255,0.05);
-            padding: 12px 20px;
-            font-weight: 600;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .events-container {
-            padding: 15px;
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
         }
 
         .event-card {
             background: var(--card-bg);
-            border-radius: 6px;
-            padding: 15px;
-            margin: 10px 0;
-            display: flex;
-            gap: 15px;
-            align-items: center;
+            border-radius: 8px;
+            padding: 20px;
             border-left: 4px solid;
             transition: transform 0.2s;
         }
 
         .event-card:hover {
-            transform: translateX(5px);
-        }
-
-        .currency-flag {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #2a2e35;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .event-time {
-            width: 120px;
-            font-size: 0.9em;
-            color: #95a5a6;
-        }
-
-        .event-content {
-            flex: 1;
+            transform: translateY(-3px);
         }
 
         .currency-pair {
             font-weight: 600;
             color: #2ecc71;
-            margin-bottom: 4px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .event-time {
+            font-size: 0.9em;
+            color: #95a5a6;
+            margin-bottom: 15px;
         }
 
         .event-title {
-            font-size: 0.95em;
+            font-size: 1em;
             line-height: 1.4;
+            margin-bottom: 15px;
         }
 
         .impact-tag {
-            font-size: 0.8em;
-            padding: 3px 8px;
+            font-size: 0.85em;
+            padding: 4px 12px;
             border-radius: 4px;
             text-transform: uppercase;
+            display: inline-block;
         }
 
-        .impact-high { border-color: var(--high-impact); }
-        .impact-medium { border-color: var(--medium-impact); }
-        .impact-low { border-color: var(--low-impact); }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2em;
+            color: #95a5a6;
+        }
 
-        .no-events {
+        .error-message {
+            color: #e74c3c;
             padding: 20px;
             text-align: center;
-            color: #95a5a6;
-            font-style: italic;
+            border: 1px solid #e74c3c;
+            border-radius: 8px;
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Professional FX Calendar</h1>
-            <p>Economic Events & Market Releases</p>
+            <h1>Live FX Market News</h1>
+            <p>Real-time Economic Events & Analysis</p>
         </div>
 
-        <div id="calendar-container">
-            <!-- Loading skeleton -->
-            <div class="calendar-day">
-                <div class="day-header">Loading...</div>
-                <div class="events-container">
-                    <div class="event-card">
-                        <div class="currency-flag"></div>
-                        <div class="event-time"></div>
-                        <div class="event-content">
-                            <div class="currency-pair"></div>
-                            <div class="event-title"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div id="news-container" class="calendar-grid">
+            <div class="loading">Loading live market data...</div>
         </div>
     </div>
 
 <script>
-const API_KEY =  'LBX4CI31I7DSUUWN' ;
-const NEWS_URL = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=forex&apikey=${API_KEY}`;
+const API_KEY = 'YOUR_API_KEY'; // LBX4CI31I7DSUUWN
+const NEWS_URL = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=forex&apikey=${API_KEY}&limit=1000`;
 
-// Simulated future dates for calendar structure
-const generateCalendarDays = () => {
-    const days = [];
-    const today = new Date();
-    for (let i = -2; i < 5; i++) {
-        const date = new Date(today);
-        date.setDate(date.getDate() + i);
-        days.push(date.toISOString().split('T')[0]);
-    }
-    return days;
-};
-
-function getCurrencyFlag(currency) {
-    const flags = {
-        USD: '🇺🇸', EUR: '🇪🇺', JPY: '🇯🇵', GBP: '🇬🇧',
-        CHF: '🇨🇭', CAD: '🇨🇦', AUD: '🇦🇺', NZD: '🇳🇿'
-    };
-    return flags[currency] || '💱';
-}
-
-function formatDateHeader(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-        weekday: 'long',
-        month: 'long',
-        day: 'numeric'
-    });
-}
-
-function formatTime(timeString) {
-    const date = new Date(timeString);
-    return date.toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true,
-        timeZone: 'UTC'
-    }) + ' GMT';
-}
-
-async function fetchCalendar() {
+async function fetchNews() {
     try {
         const response = await fetch(NEWS_URL);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
         const data = await response.json();
-        const events = data.feed || [];
         
-        // Generate calendar structure with empty days
-        const calendarDays = generateCalendarDays();
-        const eventsByDate = groupEventsByDate(events);
+        if (data.Information?.includes("API rate limit")) {
+            throw new Error('API rate limit exceeded - Please wait');
+        }
         
-        displayCalendar(calendarDays, eventsByDate);
+        if (!data.feed || data.feed.length === 0) {
+            throw new Error('No market data available');
+        }
+        
+        displayNews(data.feed);
     } catch (error) {
-        console.error('Error:', error);
+        showError(error.message);
     }
 }
 
-function groupEventsByDate(events) {
-    const grouped = {};
-    events.forEach(event => {
-        const date = event.time_published.split('T')[0];
-        if (!grouped[date]) grouped[date] = [];
-        grouped[date].push(event);
-    });
-    return grouped;
-}
-
-function displayCalendar(dates, eventsByDate) {
-    const container = document.getElementById('calendar-container');
+function displayNews(newsItems) {
+    const container = document.getElementById('news-container');
     container.innerHTML = '';
 
-    dates.forEach(date => {
-        const dayElement = document.createElement('div');
-        dayElement.className = 'calendar-day';
-        
-        dayElement.innerHTML = `
-            <div class="day-header">${formatDateHeader(date)}</div>
-            <div class="events-container" id="events-${date}"></div>
-        `;
-
-        const eventsContainer = dayElement.querySelector(`#events-${date}`);
-        const events = eventsByDate[date] || [];
-        
-        if (events.length > 0) {
-            events.forEach(event => {
-                const currencies = getCurrencyPairs(event);
-                const card = createEventCard(event, currencies);
-                eventsContainer.appendChild(card);
-            });
-        } else {
-            eventsContainer.innerHTML = `
-                <div class="no-events">No scheduled events for this date</div>
-            `;
-        }
-
-        container.appendChild(dayElement);
+    newsItems.forEach(item => {
+        const currencies = getCurrencyPairs(item);
+        const card = createNewsCard(item, currencies);
+        container.appendChild(card);
     });
 }
 
-function createEventCard(event, currencies) {
+function createNewsCard(event, currencies) {
     const card = document.createElement('div');
     card.className = `event-card ${getImpactClass(event.overall_sentiment_score)}`;
     
     card.innerHTML = `
-        <div class="currency-flag">
-            ${currencies.map(c => getCurrencyFlag(c)).join('')}
-        </div>
-        <div class="event-time">
-            ${formatTime(event.time_published)}
-        </div>
-        <div class="event-content">
-            <div class="currency-pair">
-                ${currencies.join(' / ')}
-            </div>
-            <div class="event-title">
-                ${event.title}
-            </div>
-        </div>
+        <div class="currency-pair">${currencies.join(' / ')}</div>
+        <div class="event-time">${formatTime(event.time_published)}</div>
+        <div class="event-title">${event.title}</div>
         <div class="impact-tag" style="color: ${getImpactColor(getImpactClass(event.overall_sentiment_score))}">
             ${getImpactLabel(event.overall_sentiment_score)}
         </div>
+        ${event.url ? `<a href="${event.url}" target="_blank" style="color: #3498db; margin-top: 10px; display: block;">Read Full Report →</a>` : ''}
     `;
 
     return card;
@@ -281,10 +173,30 @@ function createEventCard(event, currencies) {
 
 function getCurrencyPairs(event) {
     const currencies = ['USD', 'EUR', 'JPY', 'GBP', 'CHF', 'CAD', 'AUD', 'NZD'];
-    const found = currencies.filter(c => 
+    const titleMatches = currencies.filter(c => 
         new RegExp(`\\b${c}\\b`, 'i').test(event.title)
     );
-    return found.length > 0 ? found : ['GLOBAL'];
+    const tickerMatches = (event.ticker_sentiment || [])
+        .map(t => t.ticker?.split(':')[1])
+        .filter(c => c && currencies.includes(c));
+    
+    return [...new Set([...titleMatches, ...tickerMatches])].slice(0, 2) || ['GLOBAL'];
+}
+
+function formatTime(timeString) {
+    try {
+        const date = new Date(timeString);
+        return date.toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+            timeZone: 'UTC'
+        }) + ' GMT';
+    } catch {
+        return 'Time unavailable';
+    }
 }
 
 function getImpactClass(score) {
@@ -309,10 +221,21 @@ function getImpactLabel(score) {
     return 'Low Impact';
 }
 
+function showError(message) {
+    const container = document.getElementById('news-container');
+    container.innerHTML = `
+        <div class="error-message">
+            <h3>⚠️ Data Loading Error</h3>
+            <p>${message}</p>
+            <p>Please check your API key and try again later</p>
+        </div>
+    `;
+}
+
 // Initial load
-fetchCalendar();
+fetchNews();
 // Refresh every 5 minutes
-setInterval(fetchCalendar, 300000);
+setInterval(fetchNews, 300000);
 </script>
 </body>
 </html>
