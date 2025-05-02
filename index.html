@@ -3,30 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forex Impact Matrix</title>
+    <title>FX News Matrix</title>
     <style>
         :root {
-            --primary-bg: #0d1117;
-            --card-bg: #161b22;
-            --text-primary: #c9d1d9;
-            --high-impact: #ff4444;
-            --medium-impact: #ffaa44;
-            --low-impact: #44aaff;
-            --neutral-impact: #00cc88;
+            --primary-bg: #1a1e24;
+            --card-bg: #252a32;
+            --text-primary: #d1d6dd;
+            --high-impact: #e74c3c;
+            --medium-impact: #f39c12;
+            --low-impact: #3498db;
+            --border-color: #2f3540;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Roboto', sans-serif;
         }
 
         body {
             background: var(--primary-bg);
             color: var(--text-primary);
             min-height: 100vh;
-            padding: 1rem;
+            padding: 20px;
         }
 
         .container {
@@ -34,72 +34,64 @@
             margin: 0 auto;
         }
 
-        .impact-legend {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            padding: 1rem;
-            margin-bottom: 2rem;
-            background: var(--card-bg);
-            border-radius: 8px;
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-        }
-
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-        }
-
-        .events-grid {
+        .news-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-            padding: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
         }
 
-        .event-card {
+        .news-card {
             background: var(--card-bg);
-            border-radius: 10px;
-            padding: 1.5rem;
+            border-radius: 6px;
+            padding: 15px;
             border-left: 4px solid;
+            position: relative;
             transition: transform 0.2s;
-            cursor: pointer;
         }
 
-        .event-card:hover {
-            transform: translateY(-3px);
-        }
-
-        .currency-pair {
-            font-weight: 600;
-            color: #00ffaa;
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-
-        .event-time {
-            color: #8b949e;
-            font-size: 0.9rem;
-            margin-bottom: 0.8rem;
-        }
-
-        .event-title {
-            font-size: 1rem;
-            margin-bottom: 1rem;
+        .news-card:hover {
+            transform: translateY(-2px);
         }
 
         .impact-high { border-color: var(--high-impact); }
         .impact-medium { border-color: var(--medium-impact); }
         .impact-low { border-color: var(--low-impact); }
-        .impact-neutral { border-color: var(--neutral-impact); }
+
+        .currency-pair {
+            font-weight: 500;
+            color: #2ecc71;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .event-time {
+            background: rgba(255,255,255,0.05);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            display: inline-block;
+            margin-bottom: 10px;
+            color: #95a5a6;
+        }
+
+        .event-title {
+            font-size: 0.95em;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .event-impact {
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
         .modal {
             display: none;
@@ -109,62 +101,49 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.9);
-            padding: 1rem;
-            overflow-y: auto;
+            padding: 20px;
             z-index: 1000;
+            overflow-y: auto;
         }
 
         .modal-content {
             background: var(--card-bg);
             max-width: 600px;
-            margin: 2rem auto;
-            padding: 2rem;
-            border-radius: 10px;
+            margin: 30px auto;
+            padding: 25px;
+            border-radius: 8px;
             position: relative;
         }
 
         .close-btn {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: 15px;
+            right: 15px;
             cursor: pointer;
-            font-size: 1.5rem;
+            font-size: 1.5em;
+            color: #7f8c8d;
         }
 
         @media (max-width: 768px) {
-            .events-grid {
+            .news-grid {
                 grid-template-columns: 1fr;
             }
             
             .modal-content {
-                padding: 1.5rem;
+                padding: 15px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="impact-legend">
-            <div class="legend-item">
-                <div class="legend-color" style="background: var(--high-impact)"></div>
-                High Impact
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: var(--medium-impact)"></div>
-                Medium Impact
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: var(--low-impact)"></div>
-                Low Impact
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: var(--neutral-impact)"></div>
-                Neutral Impact
-            </div>
+        <div class="header">
+            <h1>Forex Economic Calendar</h1>
+            <p>Global Market Events (GMT Time)</p>
         </div>
 
-        <div id="events-container" class="events-grid">
-            <div class="loading">Loading market events...</div>
+        <div id="news-container" class="news-grid">
+            <div class="news-card">Loading market events...</div>
         </div>
     </div>
 
@@ -176,79 +155,60 @@
     </div>
 
 <script>
-const API_KEY = 'YOUR_API_KEY'; // 🔑 LBX4CI31I7DSUUWN
+const API_KEY = 'YOUR_API_KEY'; // LBX4CI31I7DSUUWN
 const NEWS_URL = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&apikey=${API_KEY}`;
 
-// Improved time formatting function
-function formatNewsTime(timeString) {
+function formatGMTTime(timeString) {
     try {
-        const [datePart, timePart] = timeString.split('T');
-        const year = datePart.substring(0, 4);
-        const month = String(datePart.substring(4, 6) - 1).padStart(2, '0');
-        const day = datePart.substring(6, 8);
-        const hours = timePart.substring(0, 2);
-        const minutes = timePart.substring(2, 4);
-
-        const date = new Date(year, month, day, hours, minutes);
-        
-        return date.toLocaleString('en-US', {
-            weekday: 'short',
-            month: 'short',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        }) + ` (${date.toUTCString().substring(0, 22)})`;
+        const date = new Date(timeString);
+        return date.toUTCString().replace('GMT', '') + ' GMT';
     } catch (error) {
         console.error('Error formatting time:', error);
         return 'Time unavailable';
     }
 }
 
-async function fetchEvents() {
+async function fetchNews() {
     try {
         const response = await fetch(NEWS_URL);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
         const data = await response.json();
-        if (data.Note) throw new Error('API rate limit exceeded - Try again in 1 minute');
-        if (!data.feed || !Array.isArray(data.feed)) throw new Error('Invalid data format from API');
+        if (data.Note) throw new Error('API rate limit exceeded');
+        if (!data.feed || !Array.isArray(data.feed)) throw new Error('Invalid data format');
         
-        processEvents(data.feed);
+        processNews(data.feed);
     } catch (error) {
         showError(error.message);
     }
 }
 
-function processEvents(events) {
-    const container = document.getElementById('events-container');
+function processNews(newsItems) {
+    const container = document.getElementById('news-container');
     container.innerHTML = '';
 
-    if (!events.length) {
-        container.innerHTML = '<div class="event-card">No market events found</div>';
-        return;
-    }
-
-    events.slice(0, 50).forEach(event => {
-        const currencies = getCurrencyPairs(event);
-        if (currencies) {
-            const card = createEventCard(event, currencies);
+    const majorCurrencies = ['USD', 'EUR', 'JPY', 'GBP', 'CHF', 'CAD', 'AUD'];
+    
+    newsItems.slice(0, 50).forEach(item => {
+        const currencies = getCurrencyPairs(item.title);
+        if (currencies.length > 0) {
+            const card = createNewsCard(item, currencies);
             container.appendChild(card);
         }
     });
 }
 
-function createEventCard(event, currencies) {
+function createNewsCard(event, currencies) {
     const impactClass = getImpactClass(event.overall_sentiment_score);
     const card = document.createElement('div');
-    card.className = `event-card ${impactClass}`;
+    card.className = `news-card ${impactClass}`;
     card.onclick = () => showEventDetails(event, currencies);
     
     card.innerHTML = `
-        <div class="currency-pair">${currencies}</div>
-        <div class="event-time">${formatNewsTime(event.time_published)}</div>
+        <div class="event-time">${formatGMTTime(event.time_published)}</div>
+        <div class="currency-pair">${currencies.join(' / ')}</div>
         <div class="event-title">${event.title}</div>
-        <div style="color: ${getImpactColor(impactClass)}; font-size: 0.9rem;">
+        <div class="event-impact" style="color: ${getImpactColor(impactClass)}">
             ${event.overall_sentiment_label || 'Market Event'}
         </div>
     `;
@@ -258,80 +218,76 @@ function createEventCard(event, currencies) {
 
 function showEventDetails(event, currencies) {
     const modalContent = document.getElementById('modal-content');
-    const [base, quote] = currencies.split('/');
-    const impact = getImpactLabel(event.overall_sentiment_score);
     
     modalContent.innerHTML = `
-        <h2 style="margin-bottom: 1rem;">${event.title}</h2>
-        <div style="margin-bottom: 1.5rem;">
-            <div class="currency-pair">${currencies}</div>
-            <div class="event-time">
-                ${formatNewsTime(event.time_published)}
-            </div>
+        <h2 style="margin-bottom: 15px; color: #2ecc71">${currencies.join(' / ')}</h2>
+        <div style="margin-bottom: 20px; color: #95a5a6">
+            ${formatGMTTime(event.time_published)}
+        </div>
+        <h3 style="margin-bottom: 15px">${event.title}</h3>
+        
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+            <h4 style="margin-bottom: 10px; color: #bdc3c7">Market Impact Analysis</h4>
+            <p>${generateImpactAnalysis(event, currencies)}</p>
         </div>
         
-        <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 8px;">
-            <h3 style="margin-bottom: 1rem;">💹 Expected Market Impact</h3>
-            <p>${generateImpactAnalysis(event, base, quote)}</p>
-            ${event.summary ? `<p style="margin-top: 1rem;">${event.summary}</p>` : ''}
-        </div>
+        ${event.summary ? `
+        <div style="margin-bottom: 20px;">
+            <h4 style="margin-bottom: 10px; color: #bdc3c7">Event Summary</h4>
+            <p>${event.summary}</p>
+        </div>` : ''}
         
         ${event.url ? `
-        <div style="margin-top: 1.5rem;">
-            <a href="${event.url}" target="_blank" style="color: #44aaff; text-decoration: none;">
-                📰 Read Full Report →
-            </a>
-        </div>` : ''}
+        <a href="${event.url}" target="_blank" 
+           style="display: inline-block; padding: 8px 15px; 
+                  background: #2980b9; color: white; 
+                  text-decoration: none; border-radius: 4px;">
+            Full Report ↗
+        </a>` : ''}
     `;
 
     document.getElementById('event-modal').style.display = 'block';
 }
 
-function generateImpactAnalysis(event, baseCurrency, quoteCurrency) {
+function generateImpactAnalysis(event, currencies) {
     const score = parseFloat(event.overall_sentiment_score);
-    const impactLevel = getImpactLabel(score);
+    const impact = getImpactLabel(score);
+    const [base, quote] = currencies;
     
-    let analysis = `This ${impactLevel} event is likely to `;
-    analysis += score > 0.5 ? 'strengthen ' : 'weaken ';
-    analysis += `${baseCurrency} against ${quoteCurrency || 'major currencies'}. `;
+    let analysis = `This ${impact} event is expected to `;
+    analysis += score >= 0.5 ? 'strengthen ' : 'weaken ';
+    analysis += `${base} against ${quote || 'major currencies'}. `;
     
     if (score > 0.7) {
-        analysis += `Traders should prepare for potential breakouts and increased volatility.`;
+        analysis += `Traders should anticipate increased volatility and potential breakout opportunities.`;
     } else if (score > 0.4) {
-        analysis += `Moderate price movements expected, watch key support/resistance levels.`;
+        analysis += `Moderate market movement expected with possible retracement opportunities.`;
     } else {
-        analysis += `Limited market reaction anticipated, range-bound trading likely.`;
+        analysis += `Limited market impact anticipated, range-bound trading likely.`;
     }
     
     return analysis;
 }
 
-function getCurrencyPairs(event) {
-    const currencies = ['USD', 'EUR', 'JPY', 'GBP', 'CHF', 'CAD', 'AUD', 'NZD'];
-    const titleCurrencies = currencies.filter(c => 
-        new RegExp(`\\b${c}\\b`, 'i').test(event.title)
-    );
-    const tickerCurrencies = (event.ticker_sentiment || [])
-        .map(t => t.ticker?.split(':')[1])
-        .filter(c => c && currencies.includes(c));
-    
-    const allCurrencies = [...new Set([...titleCurrencies, ...tickerCurrencies])];
-    return allCurrencies.length >= 1 ? allCurrencies.join('/') : null;
+function getCurrencyPairs(title) {
+    const currencies = ['USD', 'EUR', 'JPY', 'GBP', 'CHF', 'CAD', 'AUD'];
+    return currencies.filter(currency => 
+        new RegExp(`\\b${currency}\\b`, 'i').test(title)
+    ).slice(0, 2);
 }
 
 function getImpactClass(score) {
     const numScore = parseFloat(score);
     if (numScore >= 0.7) return 'impact-high';
     if (numScore >= 0.4) return 'impact-medium';
-    return numScore >= 0.1 ? 'impact-low' : 'impact-neutral';
+    return 'impact-low';
 }
 
 function getImpactColor(impactClass) {
     return {
-        'impact-high': '#ff4444',
-        'impact-medium': '#ffaa44',
-        'impact-low': '#44aaff',
-        'impact-neutral': '#00cc88'
+        'impact-high': '#e74c3c',
+        'impact-medium': '#f39c12',
+        'impact-low': '#3498db'
     }[impactClass];
 }
 
@@ -339,7 +295,7 @@ function getImpactLabel(score) {
     const numScore = parseFloat(score);
     if (numScore >= 0.7) return 'High Impact';
     if (numScore >= 0.4) return 'Medium Impact';
-    return numScore >= 0.1 ? 'Low Impact' : 'Neutral Impact';
+    return 'Low Impact';
 }
 
 function closeModal() {
@@ -347,20 +303,20 @@ function closeModal() {
 }
 
 function showError(message) {
-    const container = document.getElementById('events-container');
+    const container = document.getElementById('news-container');
     container.innerHTML = `
-        <div class="event-card" style="color: var(--high-impact)">
-            <h3>⚠️ Error Loading Data</h3>
+        <div class="news-card" style="color: #e74c3c">
+            <h3>⚠️ Loading Error</h3>
             <p>${message}</p>
-            <p>Please check your API key and try again</p>
+            <p>Please check your API key and network connection</p>
         </div>
     `;
 }
 
 // Initial load
-fetchEvents();
+fetchNews();
 // Refresh every 5 minutes
-setInterval(fetchEvents, 300000);
+setInterval(fetchNews, 300000);
 
 // Close modal on outside click
 window.onclick = function(event) {
