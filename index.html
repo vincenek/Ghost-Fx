@@ -107,7 +107,7 @@
     <div class="container">
         <div class="header">
             <h1>Live FX Market News</h1>
-            <p>Real-time Economic Events & Analysis</p>
+            <p>Real-time Economic Events & Analysis (GMT)</p>
         </div>
 
         <div id="news-container" class="calendar-grid">
@@ -119,23 +119,44 @@
 const API_KEY = 'YOUR_API_KEY'; // LBX4CI31I7DSUUWN
 const NEWS_URL = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=forex&apikey=${API_KEY}&limit=1000`;
 
+// Format Alpha Vantage time to readable GMT
+function formatTime(timeString) {
+    try {
+        const year = timeString.substring(0,4);
+        const month = String(timeString.substring(4,6) - 1).padStart(2, '0');
+        const day = timeString.substring(6,8);
+        const hours = timeString.substring(9,11);
+        const minutes = timeString.substring(11,13);
+        
+        const date = new Date(Date.UTC(year, month, day, hours, minutes));
+        
+        return date.toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+            timeZone: 'UTC'
+        }) + ' GMT';
+    } catch (error) {
+        console.error('Time format error:', error);
+        return 'Time unavailable';
+    }
+}
+
 async function fetchNews() {
     try {
         const response = await fetch(NEWS_URL);
         
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         
         const data = await response.json();
         
-        if (data.Information?.includes("API rate limit")) {
-            throw new Error('API rate limit exceeded - Please wait');
+        if (data.Note?.includes("API rate limit")) {
+            throw new Error('API rate limit exceeded - Try again in 1 minute');
         }
         
-        if (!data.feed || data.feed.length === 0) {
-            throw new Error('No market data available');
-        }
+        if (!data.feed?.length) throw new Error('No market data available');
         
         displayNews(data.feed);
     } catch (error) {
@@ -181,22 +202,6 @@ function getCurrencyPairs(event) {
         .filter(c => c && currencies.includes(c));
     
     return [...new Set([...titleMatches, ...tickerMatches])].slice(0, 2) || ['GLOBAL'];
-}
-
-function formatTime(timeString) {
-    try {
-        const date = new Date(timeString);
-        return date.toLocaleString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true,
-            timeZone: 'UTC'
-        }) + ' GMT';
-    } catch {
-        return 'Time unavailable';
-    }
 }
 
 function getImpactClass(score) {
