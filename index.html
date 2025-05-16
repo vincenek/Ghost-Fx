@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GhøstFx - Systematic Trading Architect</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+    <title>GhøstFx | Systematic Trading Architect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #00ff9d;
-            --secondary: #2d2d2d;
-            --accent: #1a1a1a;
+            --secondary: #1a1a1a;
+            --tertiary: #262626;
             --bg: #0a0a0a;
-            --text: #e0e0e0;
+            --text: #e5e5e5;
         }
 
         * {
@@ -21,94 +21,77 @@
         }
 
         body {
-            background-color: var(--bg);
+            background: var(--bg);
             color: var(--text);
-            font-family: 'Space Grotesk', sans-serif;
-            line-height: 1.7;
-            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1rem;
         }
 
-        .logo-header {
+        .hero {
             text-align: center;
-            margin: 5rem 0;
-            padding-bottom: 4rem;
+            padding: 4rem 1rem;
             border-bottom: 1px solid var(--secondary);
         }
 
-        .logo-header img {
-            max-width: 320px;
-            filter: drop-shadow(0 0 25px rgba(0, 255, 157, 0.15));
-            margin-bottom: 2rem;
+        .logo {
+            width: 200px;
+            margin: 0 auto 2rem;
+            filter: drop-shadow(0 0 20px rgba(0, 255, 157, 0.1));
         }
 
         h1, h2, h3 {
-            font-family: 'Space Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             color: var(--primary);
-            letter-spacing: -0.5px;
         }
 
         h1 {
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             margin-bottom: 1rem;
         }
 
         h2 {
-            font-size: 2.2rem;
-            margin: 4rem 0 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 3px solid var(--primary);
-        }
-
-        .quote {
-            font-size: 1.4rem;
-            color: var(--primary);
-            margin: 3rem 0;
-            padding: 2rem;
-            background: var(--accent);
-            border-left: 4px solid var(--primary);
+            font-size: 1.8rem;
+            margin: 3rem 0 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary);
         }
 
         .section {
-            margin: 5rem 0;
+            background: var(--secondary);
+            border-radius: 8px;
             padding: 2rem;
-            background: var(--accent);
-            border-radius: 4px;
-            box-shadow: 0 4px 30px rgba(0,0,0,0.25);
+            margin: 2rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
 
-        .arsenal-grid {
+        .grid {
             display: grid;
-            gap: 2rem;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            margin: 3rem 0;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         }
 
-        .tool-card {
-            padding: 2rem;
+        .card {
+            background: var(--tertiary);
+            padding: 1.5rem;
+            border-radius: 6px;
             border: 1px solid var(--secondary);
-            border-radius: 4px;
-            transition: transform 0.3s;
-        }
-
-        .tool-card:hover {
-            transform: translateY(-5px);
         }
 
         ul {
-            list-style: none;
-            padding-left: 2rem;
+            padding-left: 1.5rem;
         }
 
         li {
-            margin: 1.5rem 0;
+            margin: 1rem 0;
             position: relative;
-            padding-left: 2rem;
+            padding-left: 1.5rem;
         }
 
         li::before {
@@ -120,154 +103,161 @@
 
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin: 3rem 0;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            margin: 2rem 0;
         }
 
         .gallery img {
             width: 100%;
             height: auto;
-            border: 2px solid var(--secondary);
-            border-radius: 4px;
-            transition: transform 0.3s;
+            border-radius: 6px;
+            border: 1px solid var(--secondary);
+            transition: transform 0.3s ease;
         }
 
         .gallery img:hover {
-            transform: scale(1.03);
-            box-shadow: 0 4px 25px rgba(0, 255, 157, 0.1);
+            transform: scale(1.02);
         }
 
-        footer {
+        .contact {
             text-align: center;
-            padding: 4rem 0;
-            margin-top: 6rem;
+            padding: 3rem 0;
+            margin-top: 3rem;
             border-top: 1px solid var(--secondary);
         }
 
-        .contact-links {
-            margin: 2rem 0;
-        }
-
-        .contact-links a {
-            color: var(--primary);
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            margin: 0.5rem;
+            background: var(--primary);
+            color: var(--bg);
             text-decoration: none;
-            margin: 0 1rem;
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--primary);
             border-radius: 4px;
-            transition: all 0.3s;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
 
-        .contact-links a:hover {
-            background: rgba(0, 255, 157, 0.1);
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 255, 157, 0.3);
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 1.5rem;
-            }
-            
             h1 {
-                font-size: 2.2rem;
+                font-size: 2rem;
             }
             
             h2 {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
+            }
+            
+            .section {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .hero {
+                padding: 3rem 0.5rem;
+            }
+            
+            .logo {
+                width: 160px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header class="logo-header">
-            <img src="https://i.postimg.cc/SYjmydgZ/880218-AB-2062-4-AD0-9966-D6-F6-EA9-E8-D43.png" alt="GhøstFx Logo">
+        <header class="hero">
+            <img src="https://i.postimg.cc/SYjmydgZ/880218-AB-2062-4-AD0-9966-D6-F6-EA9-E8-D43.png" alt="GhøstFx Logo" class="logo">
             <h1>GhøstFx</h1>
             <p>Trader. Builder. System.</p>
         </header>
 
-        <section class="section">
-            <blockquote class="quote">“I don’t trade signals. I build the tools people wish they had.”</blockquote>
+        <main>
+            <section class="section">
+                <blockquote>“I don’t trade signals. I build the tools people wish they had.”</blockquote>
+            </section>
 
-            <h2>01 // About Me</h2>
-            <p>I'm a Nigerian forex trader who didn't start with much—no funding, no fancy mentorship, just late nights, YouTube charts, and a cracked MT4. Today, I've built my own personal indicator, coded two custom bots, and developed two full trading strategies that read the market like a script. I don't chase hype. I study patterns, test relentlessly, and automate precision.</p>
-            <br>
-            <p><strong>This isn’t a hustle. It’s a system.</strong></p>
+            <section class="section">
+                <h2>01 // About Me</h2>
+                <p>I'm a Nigerian forex trader who didn't start with much—no funding, no fancy mentorship, just late nights, YouTube charts, and a cracked MT4. Today, I've built my own personal indicator, coded two custom bots, and developed two full trading strategies that read the market like a script. I don't chase hype. I study patterns, test relentlessly, and automate precision.</p>
+                <p><strong>This isn’t a hustle. It’s a system.</strong></p>
+            </section>
 
-            <h2>02 // Arsenal (Tools I've Built)</h2>
-            <div class="arsenal-grid">
-                <div class="tool-card">
-                    <h3>Indicator: “Ghost Levels”</h3>
-                    <p>My personal tool that detects higher highs, lower lows, order blocks, liquidity zones, and fair value gaps. Designed for clean, unfiltered entries—no noise.</p>
+            <section class="section">
+                <h2>02 // Arsenal</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Ghost Levels Indicator</h3>
+                        <p>Detects higher highs, lower lows, order blocks, liquidity zones, and fair value gaps. Clean, unfiltered entries with zero noise.</p>
+                    </div>
+                    <div class="card">
+                        <h3>SLVBXHVO-OB Bot</h3>
+                        <ul>
+                            <li>Pairs: EURCAD, EURAUD</li>
+                            <li>1-Hour timeframe</li>
+                            <li>NY session trading</li>
+                            <li>Trend/volatility filters</li>
+                            <li>3 trades/day max</li>
+                            <li>1% risk per trade</li>
+                            <li>Dynamic SL/TP</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>XXX Bot</h3>
+                        <ul>
+                            <li>Enhanced Silver Bullet X</li>
+                            <li>ADX momentum filter</li>
+                            <li>High-liquidity focus</li>
+                            <li>Same risk parameters</li>
+                            <li>Automated execution</li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="tool-card">
-                    <h3>Bot 1: “SLVBXHVO-OB”</h3>
-                    <ul>
-                        <li>Pairs: EURCAD, EURAUD</li>
-                        <li>Timeframe: 1-Hour</li>
-                        <li>Trades during optimal New York session hours</li>
-                        <li>Uses proven trend-following and volatility filters</li>
-                        <li>Smart risk management: max 3 trades/day, 1% risk per trade</li>
-                        <li>Combines market structure and volume analysis for precise entries</li>
-                        <li>Dynamic stop-loss and take-profit based on market volatility</li>
-                    </ul>
+                <p><em>(Not available for sale or rent. Yet.)</em></p>
+            </section>
+
+            <section class="section">
+                <h2>03 // The Doctrine</h2>
+                <ul>
+                    <li>Liquidity isn't random. It's engineered.</li>
+                    <li>I don't enter trades—I execute systems.</li>
+                    <li>Emotions don't belong on my charts.</li>
+                    <li>If it's not tested, it's not trusted.</li>
+                    <li>Losses teach rules. Wins confirm them.</li>
+                    <li>Building freedom, not clout.</li>
+                </ul>
+            </section>
+
+            <section class="section">
+                <h2>04 // Silent Receipts</h2>
+                <div class="gallery">
+                    <img src="https://i.postimg.cc/Hcytf1g3/IMG-1509.png" alt="Market Structure">
+                    <img src="https://i.postimg.cc/pyB0xxj1/IMG-1511.png" alt="Bot Execution">
+                    <img src="https://i.postimg.cc/Jyw3ZdJk/IMG-1510.png" alt="Performance Metrics">
                 </div>
-                <div class="tool-card">
-                    <h3>Bot 2: “XXX”</h3>
-                    <ul>
-                        <li>Pairs: EURCAD, EURAUD</li>
-                        <li>Timeframe: 1-Hour</li>
-                        <li>Builds on Silver Bullet X with added trend strength filter (ADX)</li>
-                        <li>Trades only when market shows strong momentum</li>
-                        <li>Same disciplined risk and trade limits</li>
-                        <li>Focused on high-liquidity trading windows for accuracy</li>
-                    </ul>
+                <p><em>(Comprehensive performance dashboard in development)</em></p>
+            </section>
+
+            <section class="contact">
+                <h2>05 // Connect</h2>
+                <p>Tools remain private. Collaboration inquiries:</p>
+                <div style="margin: 2rem 0;">
+                    <a href="mailto:Kenechukwu130@gmail.com" class="btn">Email</a>
+                    <a href="https://wa.me/2349153072571" target="_blank" class="btn">WhatsApp</a>
                 </div>
-            </div>
-            <p><em>(Bots are not for sale or rent. Yet.)</em></p>
-
-            <h2>03 // The Doctrine</h2>
-            <ul>
-                <li>Liquidity isn't random. It's engineered.</li>
-                <li>I don't enter trades—I execute systems.</li>
-                <li>Emotions don't belong on my charts. Bots don't panic.</li>
-                <li>If it's not tested, it's not trusted.</li>
-                <li>Every loss teaches a rule. Every win confirms one.</li>
-                <li>I build to free myself, not to impress traders.</li>
-            </ul>
-
-            <h2>04 // Silent Receipts</h2>
-            <p>I'm not here to impress. Just to show enough:</p>
-            <ul>
-                <li>Real chart setups, marked by the system—not me</li>
-                <li>Trades executed by the bots, no manual interference</li>
-                <li>Strategies tested on demo and small capital real accounts</li>
-                <li>Screenshots below speak louder than hype</li>
-            </ul>
-            <div class="gallery">
-                <img src="https://i.postimg.cc/Hcytf1g3/IMG-1509.png" alt="Trade Analysis 2">
-                <img src="https://i.postimg.cc/pyB0xxj1/IMG-1511.png" alt="Trade Analysis 3">
-                <img src="https://i.postimg.cc/Jyw3ZdJk/IMG-1510.png" alt="Trade Analysis 4">
-            </div>
-            <p><em>(Performance page in progress.)</em></p>
-
-            <h2>05 // What's Next?</h2>
-            <p>I'm still building. The bots are still learning. The system is still evolving.<br>
-            If you're looking for signals or easy wins, this isn't for you.<br>
-            If you respect precision, logic, and automation—you'll want to stay close.</p>
-            
-            <div class="contact-links">
-                <p><strong>Tools are not public. Yet.</strong></p>
-                <a href="mailto:Kenechukwu130@gmail.com">Email Inquiry</a>
-                
-                <a href="https://wa.me/2349153072571" target="_blank">WhatsApp DM</a>
-            </div>
-        </section>
-
-        <footer>
-            <p>© GhøstFx | Lagos. Built from grit.</p>
-            <p>"I built this to break out. No team. No hype. Just a system that works."</p>
-        </footer>
+                <p>© GhøstFx | Lagos. Engineered in the shadows.<br>
+                "No hype. Just systematic execution."</p>
+            </section>
+        </main>
     </div>
 </body>
 </html>
