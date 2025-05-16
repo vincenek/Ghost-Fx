@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GhøstFx - Systematic Darkness</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>GhøstFx - Systematic Trading Architect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #8b0000;
-            --secondary: #4a4a4a;
-            --accent: #2b2b2b;
+            --primary: #00ff9d;
+            --secondary: #2d2d2d;
+            --accent: #1a1a1a;
             --bg: #0a0a0a;
-            --text: #c9c9c9;
+            --text: #e0e0e0;
         }
 
         * {
@@ -21,10 +21,10 @@
         }
 
         body {
-            background: var(--bg);
+            background-color: var(--bg);
             color: var(--text);
-            font-family: 'Poppins', sans-serif;
-            line-height: 1.8;
+            font-family: 'Space Grotesk', sans-serif;
+            line-height: 1.7;
             overflow-x: hidden;
         }
 
@@ -32,63 +32,37 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
-            position: relative;
         }
 
-        .logo-section {
+        .logo-header {
             text-align: center;
             margin: 5rem 0;
-            padding: 3rem 0;
-            border-bottom: 3px solid var(--primary);
-            position: relative;
+            padding-bottom: 4rem;
+            border-bottom: 1px solid var(--secondary);
         }
 
-        .logo-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, transparent 98%, var(--primary) 98%);
-            pointer-events: none;
-        }
-
-        .logo-section img {
-            max-width: 250px;
-            filter: drop-shadow(0 0 20px rgba(139, 0, 0, 0.3));
+        .logo-header img {
+            max-width: 320px;
+            filter: drop-shadow(0 0 25px rgba(0, 255, 157, 0.15));
             margin-bottom: 2rem;
         }
 
         h1, h2, h3 {
-            font-family: 'Orbitron', sans-serif;
+            font-family: 'Space Mono', monospace;
             color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: -0.5px;
         }
 
-        h1 { 
-            font-size: 3rem;
+        h1 {
+            font-size: 2.8rem;
             margin-bottom: 1rem;
-            text-shadow: 0 0 15px rgba(139, 0, 0, 0.3);
         }
 
         h2 {
-            font-size: 2rem;
-            margin: 3rem 0 2rem;
-            padding: 1rem 0;
-            border-bottom: 2px solid var(--primary);
-            position: relative;
-        }
-
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100px;
-            height: 2px;
-            background: var(--primary);
+            font-size: 2.2rem;
+            margin: 4rem 0 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--primary);
         }
 
         .quote {
@@ -96,43 +70,29 @@
             color: var(--primary);
             margin: 3rem 0;
             padding: 2rem;
-            border: 1px solid var(--primary);
-            position: relative;
-            background: linear-gradient(to right, transparent 95%, rgba(139,0,0,0.1));
+            background: var(--accent);
+            border-left: 4px solid var(--primary);
         }
 
         .section {
             margin: 5rem 0;
             padding: 2rem;
-            background: rgba(10, 10, 10, 0.9);
-            border: 1px solid var(--accent);
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            position: relative;
-        }
-
-        .section::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, var(--primary), transparent 50%);
-            z-index: -1;
+            background: var(--accent);
+            border-radius: 4px;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.25);
         }
 
         .arsenal-grid {
             display: grid;
             gap: 2rem;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            margin: 2rem 0;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            margin: 3rem 0;
         }
 
         .tool-card {
-            background: var(--accent);
             padding: 2rem;
-            border: 1px solid var(--primary);
-            position: relative;
+            border: 1px solid var(--secondary);
+            border-radius: 4px;
             transition: transform 0.3s;
         }
 
@@ -152,16 +112,15 @@
         }
 
         li::before {
-            content: '†';
+            content: '▹';
             color: var(--primary);
             position: absolute;
             left: 0;
-            font-weight: 700;
         }
 
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
             margin: 3rem 0;
         }
@@ -169,88 +128,63 @@
         .gallery img {
             width: 100%;
             height: auto;
-            border: 2px solid var(--primary);
+            border: 2px solid var(--secondary);
+            border-radius: 4px;
             transition: transform 0.3s;
-            position: relative;
-        }
-
-        .gallery img::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(139,0,0,0.1);
         }
 
         .gallery img:hover {
             transform: scale(1.03);
-            box-shadow: 0 0 20px rgba(139,0,0,0.3);
+            box-shadow: 0 4px 25px rgba(0, 255, 157, 0.1);
         }
 
         footer {
             text-align: center;
             padding: 4rem 0;
-            margin-top: 5rem;
-            border-top: 3px solid var(--primary);
-            position: relative;
+            margin-top: 6rem;
+            border-top: 1px solid var(--secondary);
         }
 
-        footer::before {
-            content: '';
-            position: absolute;
-            top: -3px;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: var(--primary);
+        .contact-links {
+            margin: 2rem 0;
         }
 
-        a {
+        .contact-links a {
             color: var(--primary);
             text-decoration: none;
-            position: relative;
+            margin: 0 1rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            transition: all 0.3s;
         }
 
-        a::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 1px;
-            bottom: -2px;
-            left: 0;
-            background: var(--primary);
-            transform: scaleX(0);
-            transition: transform 0.3s;
-        }
-
-        a:hover::after {
-            transform: scaleX(1);
+        .contact-links a:hover {
+            background: rgba(0, 255, 157, 0.1);
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 1rem;
+                padding: 1.5rem;
             }
             
             h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             
             h2 {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo-section">
+        <header class="logo-header">
             <img src="https://i.postimg.cc/SYjmydgZ/880218-AB-2062-4-AD0-9966-D6-F6-EA9-E8-D43.png" alt="GhøstFx Logo">
             <h1>GhøstFx</h1>
             <p>Trader. Builder. System.</p>
-        </div>
+        </header>
 
         <section class="section">
             <blockquote class="quote">“I don’t trade signals. I build the tools people wish they had.”</blockquote>
@@ -311,10 +245,9 @@
                 <li>Screenshots below speak louder than hype</li>
             </ul>
             <div class="gallery">
-                <img src="https://i.postimg.cc/zyz03QCX/IMG-1508.png" alt="Trade 1">
-                <img src="https://i.postimg.cc/Hcytf1g3/IMG-1509.png" alt="Trade 2">
-                <img src="https://i.postimg.cc/pyB0xxj1/IMG-1511.png" alt="Trade 3">
-                <img src="https://i.postimg.cc/Jyw3ZdJk/IMG-1510.png" alt="Trade 4">
+                <img src="https://i.postimg.cc/Hcytf1g3/IMG-1509.png" alt="Trade Analysis 2">
+                <img src="https://i.postimg.cc/pyB0xxj1/IMG-1511.png" alt="Trade Analysis 3">
+                <img src="https://i.postimg.cc/Jyw3ZdJk/IMG-1510.png" alt="Trade Analysis 4">
             </div>
             <p><em>(Performance page in progress.)</em></p>
 
@@ -322,14 +255,16 @@
             <p>I'm still building. The bots are still learning. The system is still evolving.<br>
             If you're looking for signals or easy wins, this isn't for you.<br>
             If you respect precision, logic, and automation—you'll want to stay close.</p>
-            <br>
-            <p><strong>Tools are not public. Yet.<br>
-            Serious collaboration or inquiry?<br>
-            [Email- Kenechukwu130@gmail.com] • [whatsapp 9153072571] </strong></p>
+            
+            <div class="contact-links">
+                <p><strong>Tools are not public. Yet.</strong></p>
+                <a href="mailto:Kenechukwu130@gmail.com">Email Inquiry</a>
+                <a href="https://wa.me/2349153072571" target="_blank">WhatsApp DM</a>
+            </div>
         </section>
 
         <footer>
-            © GhøstFx | Lagos. Built from grit.<br>
+            <p>© GhøstFx | Lagos. Built from grit.</p>
             <p>"I built this to break out. No team. No hype. Just a system that works."</p>
         </footer>
     </div>
