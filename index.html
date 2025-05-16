@@ -3,276 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional FX News Terminal</title>
+    <title>GhøstFx - Systematic Trading</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
     <style>
+        /* CSS */
         :root {
-            --primary-bg: #0d1117;
-            --card-bg: #161b22;
-            --text-primary: #c9d1d9;
-            --high-impact: #e74c3c;
-            --medium-impact: #f39c12;
-            --low-impact: #3498db;
+            --primary: #00ff9d;
+            --secondary: #7b7b7b;
+            --bg: #0a0a0a;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'IBM Plex Sans', system-ui;
         }
 
         body {
-            background: var(--primary-bg);
-            color: var(--text-primary);
-            min-height: 100vh;
-            padding: 20px;
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Space Grotesk', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 2rem;
         }
 
-        .header {
+        .logo {
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #2f3540;
+            margin: 4rem 0;
+            border-bottom: 1px solid var(--secondary);
+            padding-bottom: 3rem;
         }
 
-        .terminal-grid {
+        .logo img {
+            max-width: 300px;
+            filter: drop-shadow(0 0 15px rgba(0, 255, 157, 0.2));
+        }
+
+        h1, h2, h3 {
+            font-family: 'Space Mono', monospace;
+            color: var(--primary);
+            margin: 2rem 0;
+        }
+
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; border-left: 3px solid var(--primary); padding-left: 1rem; }
+        
+        .quote {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            margin: 2rem 0;
+            padding: 1rem;
+            border-left: 2px solid var(--primary);
+        }
+
+        .section {
+            margin: 4rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: 1s;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .arsenal-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 15px;
+            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         }
 
-        .terminal-card {
-            background: var(--card-bg);
+        .tool-card {
+            background: #111;
+            padding: 2rem;
+            border: 1px solid #222;
             border-radius: 4px;
-            padding: 15px;
-            border-left: 3px solid;
+        }
+
+        .tool-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 1rem;
+        }
+
+        li {
+            margin: 1rem 0;
             position: relative;
-            transition: transform 0.2s;
-            cursor: pointer;
+            padding-left: 1.5rem;
         }
 
-        .terminal-card:hover {
-            transform: translateY(-2px);
-        }
-
-        .currency-pair {
-            font-weight: 600;
-            color: #2ecc71;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .event-time {
+        li::before {
+            content: '›';
+            color: var(--primary);
             position: absolute;
-            top: 12px;
-            right: 12px;
-            font-size: 0.8em;
-            color: #7f8c8d;
-        }
-
-        .event-title {
-            font-size: 0.95em;
-            line-height: 1.4;
-            margin: 8px 0;
-        }
-
-        .impact-tag {
-            font-size: 0.75em;
-            padding: 3px 8px;
-            border-radius: 3px;
-            text-transform: uppercase;
-            display: inline-block;
-        }
-
-        /* Modal Styles */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            padding: 20px;
-            overflow-y: auto;
         }
 
-        .modal-content {
-            background: var(--card-bg);
-            max-width: 600px;
-            margin: 2rem auto;
-            padding: 25px;
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: auto;
             border-radius: 4px;
+            transition: transform 0.3s;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.03);
+        }
+
+        footer {
+            text-align: center;
+            padding: 4rem 0;
+            border-top: 1px solid #222;
+            margin-top: 4rem;
+            color: var(--secondary);
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
             position: relative;
         }
 
-        .close-btn {
+        a::after {
+            content: '';
             position: absolute;
-            top: 15px;
-            right: 15px;
-            cursor: pointer;
-            font-size: 1.5em;
-            color: #7f8c8d;
+            width: 100%;
+            transform: scaleX(0);
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--primary);
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
         }
 
-        /* Responsive Design */
+        a:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
         @media (max-width: 768px) {
-            .terminal-grid {
-                grid-template-columns: 1fr;
+            .container {
+                padding: 1rem;
             }
             
-            .modal-content {
-                padding: 15px;
-                margin: 1rem;
+            h1 {
+                font-size: 2rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>FX Market Terminal</h1>
-            <p>Major Currency Events Only</p>
+        <div class="logo">
+            <img src="https://i.postimg.cc/SYjmydgZ/880218-AB-2062-4-AD0-9966-D6-F6-EA9-E8-D43.png" alt="GhøstFx Logo">
         </div>
-        
-        <div id="terminal-container" class="terminal-grid">
-            <div class="loading">Loading market data...</div>
+
+        <!-- Your content here -->
+        <!-- Add all your sections following this structure -->
+        <section class="section">
+            <h2>01 // About Me</h2>
+            <p>I'm a Nigerian forex trader who didn't start with much...</p>
+        </section>
+
+        <!-- Repeat for other sections -->
+        <!-- Add your images in the gallery section -->
+        <div class="gallery">
+            <!-- Your trade images here -->
         </div>
+
+        <footer>
+            © GhøstFx | Lagos. Built from grit.
+        </footer>
     </div>
 
-    <div class="modal-overlay" id="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            <div id="modal-details"></div>
-        </div>
-    </div>
-
-<script>
-const API_KEY = 'LBX4CI31I7DSUUWN';
-const NEWS_URL = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=forex&apikey=${API_KEY}&limit=1000`;
-const MAJOR_CURRENCIES = new Set(['USD', 'EUR', 'JPY', 'GBP', 'CHF', 'CAD', 'AUD']);
-
-class FXTerminal {
-    constructor() {
-        this.newsData = [];
-    }
-
-    async init() {
-        try {
-            await this.fetchData();
-            this.setupEventListeners();
-            setInterval(() => this.fetchData(), 120000);
-        } catch (error) {
-            this.showError(error.message);
-        }
-    }
-
-    async fetchData() {
-        const response = await fetch(NEWS_URL);
-        if (!response.ok) throw new Error('Network error');
+    <script>
+        // Simple scroll animation
+        const sections = document.querySelectorAll('.section');
         
-        const data = await response.json();
-        if (data.Note) throw new Error('API limit reached');
-        
-        this.newsData = this.processData(data.feed);
-        this.updateDisplay();
-    }
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
 
-    processData(feed) {
-        return feed
-            .filter(item => this.isRelevantNews(item))
-            .sort((a, b) => b.time_published.localeCompare(a.time_published))
-            .slice(0, 50);
-    }
-
-    isRelevantNews(item) {
-        const currencies = this.getCurrencyPair(item);
-        const isMajor = currencies.some(c => MAJOR_CURRENCIES.has(c));
-        const isHighImpact = this.getImpactClass(item.overall_sentiment_score) === 'high-impact';
-        return isMajor || isHighImpact;
-    }
-
-    getCurrencyPair(item) {
-        const currencies = [...new Set([
-            ...(item.title.match(/(USD|EUR|JPY|GBP|CHF|CAD|AUD)/gi) || []),
-            ...(item.ticker_sentiment?.map(t => t.ticker.split(':')[1]) || [])
-        ].filter(Boolean).map(c => c.toUpperCase()))];
-        
-        return currencies.length ? currencies : ['GLOBAL'];
-    }
-
-    updateDisplay() {
-        const container = document.getElementById('terminal-container');
-        container.innerHTML = this.newsData.map(item => this.createCard(item)).join('');
-    }
-
-    createCard(item) {
-        const impactClass = this.getImpactClass(item.overall_sentiment_score);
-        return `
-            <div class="terminal-card ${impactClass}" data-id="${item.url}">
-                <div class="event-time">${this.formatTime(item.time_published)}</div>
-                <div class="currency-pair">${this.getCurrencyPair(item).join(' / ')}</div>
-                <div class="event-title">${item.title}</div>
-                <div class="impact-tag" style="color: ${this.getImpactColor(impactClass)}">
-                    ${this.getImpactLabel(impactClass)}
-                </div>
-            </div>
-        `;
-    }
-
-    showDetails(url) {
-        const item = this.newsData.find(n => n.url === url);
-        if (!item) return;
-
-        const details = document.getElementById('modal-details');
-        details.innerHTML = `
-            <h2>${item.title}</h2>
-            <div class="event-time">${this.formatTime(item.time_published)}</div>
-            <div class="currency-pair">${this.getCurrencyPair(item).join(' / ')}</div>
-            <div class="impact-tag" style="color: ${this.getImpactColor(this.getImpactClass(item.overall_sentiment_score))}">
-                ${this.getImpactLabel(this.getImpactClass(item.overall_sentiment_score))}
-            </div>
-            <p style="margin-top: 20px;">${item.summary || 'No summary available'}</p>
-            ${item.url ? `<a href="${item.url}" target="_blank" style="display: inline-block; margin-top: 15px; color: #3498db;">Read Full Report →</a>` : ''}
-        `;
-
-        document.getElementById('modal').style.display = 'block';
-    }
-
-    setupEventListeners() {
-        document.addEventListener('click', (e) => {
-            const card = e.target.closest('.terminal-card');
-            if (card) this.showDetails(card.dataset.id);
-            
-            if (e.target.classList.contains('modal-overlay')) {
-                this.closeModal();
-            }
+        sections.forEach(section => {
+            observer.observe(section);
         });
-    }
-
-    closeModal() {
-        document.getElementById('modal').style.display = 'none';
-    }
-
-    // Helper functions remain the same as previous version
-    formatTime(timeString) { /* ... */ }
-    getImpactClass(score) { /* ... */ }
-    getImpactColor(impact) { /* ... */ }
-    getImpactLabel(impact) { /* ... */ }
-    showError(message) { /* ... */ }
-}
-
-// Initialize terminal
-const terminal = new FXTerminal();
-terminal.init();
-</script>
+    </script>
 </body>
 </html>
