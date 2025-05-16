@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GhøstFx | Systematic Trading Architect</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <title>GhøstFx Institutional Trading Solutions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #00ff9d;
-            --secondary: #1a1a1a;
+            --primary: #FF3B30;
+            --secondary: #1A1A1A;
             --tertiary: #262626;
-            --bg: #0a0a0a;
-            --text: #e5e5e5;
+            --bg: #0A0A0A;
+            --text: #FFFFFF;
         }
 
         * {
@@ -31,88 +31,96 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 1rem;
+            padding: 0 2rem;
         }
 
-        .hero {
+        .header {
             text-align: center;
-            padding: 4rem 1rem;
-            border-bottom: 1px solid var(--secondary);
+            padding: 4rem 0;
+            border-bottom: 1px solid var(--tertiary);
         }
 
         .logo {
-            width: 200px;
+            width: 280px;
             margin: 0 auto 2rem;
-            filter: drop-shadow(0 0 20px rgba(0, 255, 157, 0.1));
+            filter: drop-shadow(0 4px 20px rgba(255, 59, 48, 0.15));
         }
 
         h1, h2, h3 {
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--primary);
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            color: var(--text);
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: -1px;
         }
 
         h2 {
-            font-size: 1.8rem;
-            margin: 3rem 0 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--secondary);
+            font-size: 2rem;
+            margin: 4rem 0 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary);
         }
 
         .section {
-            background: var(--secondary);
-            border-radius: 8px;
-            padding: 2rem;
-            margin: 2rem 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            padding: 3rem 0;
+            border-bottom: 1px solid var(--tertiary);
         }
 
         .grid {
             display: grid;
-            gap: 1.5rem;
+            gap: 2rem;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         }
 
         .card {
-            background: var(--tertiary);
-            padding: 1.5rem;
-            border-radius: 6px;
-            border: 1px solid var(--secondary);
+            background: var(--secondary);
+            padding: 2rem;
+            border-radius: 4px;
+            border: 1px solid var(--tertiary);
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
         }
 
         ul {
+            list-style: none;
             padding-left: 1.5rem;
         }
 
         li {
-            margin: 1rem 0;
+            margin: 1.2rem 0;
             position: relative;
-            padding-left: 1.5rem;
+            padding-left: 1.8rem;
         }
 
         li::before {
-            content: '▹';
+            content: '■';
             color: var(--primary);
             position: absolute;
             left: 0;
+            font-size: 0.8rem;
         }
 
         .gallery {
             display: grid;
-            gap: 1rem;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            margin: 2rem 0;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            margin: 3rem 0;
         }
 
         .gallery img {
             width: 100%;
             height: auto;
-            border-radius: 6px;
-            border: 1px solid var(--secondary);
+            border: 1px solid var(--tertiary);
+            border-radius: 4px;
             transition: transform 0.3s ease;
         }
 
@@ -120,144 +128,147 @@
             transform: scale(1.02);
         }
 
-        .contact {
+        .contact-section {
             text-align: center;
-            padding: 3rem 0;
-            margin-top: 3rem;
-            border-top: 1px solid var(--secondary);
+            padding: 4rem 0;
         }
 
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
-            margin: 0.5rem;
+        .cta-buttons {
+            margin: 2rem 0;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            margin: 0 1rem;
             background: var(--primary);
-            color: var(--bg);
+            color: var(--text);
             text-decoration: none;
             border-radius: 4px;
             font-weight: 600;
             transition: all 0.3s ease;
+            border: 1px solid transparent;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 255, 157, 0.3);
+        .cta-button:hover {
+            background: transparent;
+            border-color: var(--primary);
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            border-top: 1px solid var(--tertiary);
+            color: #666;
+            font-size: 0.9rem;
         }
 
         @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
             h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             
             h2 {
-                font-size: 1.5rem;
+                font-size: 1.7rem;
             }
             
-            .section {
-                padding: 1.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0.5rem;
-            }
-            
-            .hero {
-                padding: 3rem 0.5rem;
-            }
-            
-            .logo {
-                width: 160px;
+            .cta-button {
+                width: 100%;
+                margin: 0.5rem 0;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header class="hero">
-            <img src="https://i.postimg.cc/SYjmydgZ/880218-AB-2062-4-AD0-9966-D6-F6-EA9-E8-D43.png" alt="GhøstFx Logo" class="logo">
-            <h1>GhøstFx</h1>
-            <p>Trader. Builder. System.</p>
+        <header class="header">
+            <img src="https://i.postimg.cc/Z0Rt3x54/B58-F676-A-DE32-470-B-AA4-E-4-BDEB29-ECFA2.png" alt="GhøstFx Institutional Logo" class="logo">
+            <h1>Systematic Market Execution</h1>
+            <p>Trader. Builder. System Architect.</p>
         </header>
 
-        <main>
-            <section class="section">
-                <blockquote>“I don’t trade signals. I build the tools people wish they had.”</blockquote>
-            </section>
+        <section class="section">
+            <blockquote style="font-size: 1.4rem; color: var(--primary); margin: 2rem 0; padding: 2rem; border-left: 3px solid var(--primary);">
+                “I don’t trade signals. I build the tools people wish they had.”
+            </blockquote>
+        </section>
 
-            <section class="section">
-                <h2>01 // About Me</h2>
-                <p>I'm a Nigerian forex trader who didn't start with much—no funding, no fancy mentorship, just late nights, YouTube charts, and a cracked MT4. Today, I've built my own personal indicator, coded two custom bots, and developed two full trading strategies that read the market like a script. I don't chase hype. I study patterns, test relentlessly, and automate precision.</p>
-                <p><strong>This isn’t a hustle. It’s a system.</strong></p>
-            </section>
-
-            <section class="section">
-                <h2>02 // Arsenal</h2>
-                <div class="grid">
-                    <div class="card">
-                        <h3>Ghost Levels Indicator</h3>
-                        <p>Detects higher highs, lower lows, order blocks, liquidity zones, and fair value gaps. Clean, unfiltered entries with zero noise.</p>
-                    </div>
-                    <div class="card">
-                        <h3>SLVBXHVO-OB Bot</h3>
-                        <ul>
-                            <li>Pairs: EURCAD, EURAUD</li>
-                            <li>1-Hour timeframe</li>
-                            <li>NY session trading</li>
-                            <li>Trend/volatility filters</li>
-                            <li>3 trades/day max</li>
-                            <li>1% risk per trade</li>
-                            <li>Dynamic SL/TP</li>
-                        </ul>
-                    </div>
-                    <div class="card">
-                        <h3>XXX Bot</h3>
-                        <ul>
-                            <li>Enhanced Silver Bullet X</li>
-                            <li>ADX momentum filter</li>
-                            <li>High-liquidity focus</li>
-                            <li>Same risk parameters</li>
-                            <li>Automated execution</li>
-                        </ul>
-                    </div>
+        <section class="section">
+            <h2>Proprietary Trading Framework</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Ghost Levels Indicator</h3>
+                    <p>Advanced market structure analysis tool identifying:<br>
+                    • Higher highs/lower lows<br>
+                    • Order blocks<br> 
+                    • Liquidity zones<br>
+                    • Fair value gaps<br>
+                    <em>Zero-lag precision engine</em></p>
                 </div>
-                <p><em>(Not available for sale or rent. Yet.)</em></p>
-            </section>
-
-            <section class="section">
-                <h2>03 // The Doctrine</h2>
-                <ul>
-                    <li>Liquidity isn't random. It's engineered.</li>
-                    <li>I don't enter trades—I execute systems.</li>
-                    <li>Emotions don't belong on my charts.</li>
-                    <li>If it's not tested, it's not trusted.</li>
-                    <li>Losses teach rules. Wins confirm them.</li>
-                    <li>Building freedom, not clout.</li>
-                </ul>
-            </section>
-
-            <section class="section">
-                <h2>04 // Silent Receipts</h2>
-                <div class="gallery">
-                    <img src="https://i.postimg.cc/Hcytf1g3/IMG-1509.png" alt="Market Structure">
-                    <img src="https://i.postimg.cc/pyB0xxj1/IMG-1511.png" alt="Bot Execution">
-                    <img src="https://i.postimg.cc/Jyw3ZdJk/IMG-1510.png" alt="Performance Metrics">
+                
+                <div class="card">
+                    <h3>SLVBXHVO-OB Algorithm</h3>
+                    <ul>
+                        <li>Currency pairs: EUR/CAD, EUR/AUD</li>
+                        <li>1-hour timeframe analysis</li>
+                        <li>New York session optimization</li>
+                        <li>Volatility-adjusted position sizing</li>
+                        <li>3 trades/day maximum exposure</li>
+                        <li>1% risk per trade protocol</li>
+                    </ul>
                 </div>
-                <p><em>(Comprehensive performance dashboard in development)</em></p>
-            </section>
-
-            <section class="contact">
-                <h2>05 // Connect</h2>
-                <p>Tools remain private. Collaboration inquiries:</p>
-                <div style="margin: 2rem 0;">
-                    <a href="mailto:Kenechukwu130@gmail.com" class="btn">Email</a>
-                    <a href="https://wa.me/2349153072571" target="_blank" class="btn">WhatsApp</a>
+                
+                <div class="card">
+                    <h3>XXX Execution System</h3>
+                    <ul>
+                        <li>Momentum-driven ADX filter</li>
+                        <li>High-liquidity window targeting</li>
+                        <li>Automated risk parameters</li>
+                        <li>Silver Bullet X architecture</li>
+                        <li>Institutional-grade infrastructure</li>
+                    </ul>
                 </div>
-                <p>© GhøstFx | Lagos. Engineered in the shadows.<br>
-                "No hype. Just systematic execution."</p>
-            </section>
-        </main>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Operational Doctrine</h2>
+            <ul style="columns: 2; column-gap: 3rem;">
+                <li>Liquidity engineering analysis</li>
+                <li>Systematic execution protocols</li>
+                <li>Emotion-free algorithmic trading</li>
+                <li>Backtested market hypotheses</li>
+                <li>Continuous system optimization</li>
+                <li>Capital preservation focus</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>Performance Verification</h2>
+            <div class="gallery">
+                <img src="https://i.postimg.cc/Hcytf1g3/IMG-1509.png" alt="Execution Metrics">
+                <img src="https://i.postimg.cc/pyB0xxj1/IMG-1511.png" alt="Risk Management">
+                <img src="https://i.postimg.cc/Jyw3ZdJk/IMG-1510.png" alt="Performance Analytics">
+            </div>
+            <p style="text-align: center; margin-top: 1rem; color: #666;">Institutional-grade performance dashboard in development</p>
+        </section>
+
+        <section class="contact-section">
+            <h2>Strategic Partnerships</h2>
+            <div class="cta-buttons">
+                <a href="mailto:Kenechukwu130@gmail.com" class="cta-button">Institutional Inquiry</a>
+                <a href="https://wa.me/2349153072571" target="_blank" class="cta-button">Secure Communication</a>
+            </div>
+            <p style="margin-top: 2rem; color: #666;">
+                © GhøstFx Institutional | Systematic Alpha Generation<br>
+                Lagos. London. New York. Singapore.
+            </p>
+        </section>
     </div>
 </body>
 </html>
